@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------- the other games' pieces (DEV TOOLS library)
-// godot_export library game OUTDIR   (game: Dragon Ball Z - Buu's Fury (USA) or The Legacy of Goku (any))
+// godot_export library GAME OUTDIR   (GAME: Dragon Ball Z - Buu's Fury (USA) or The Legacy of Goku (any))
 // Read from the user's own cartridge, never shipped:
 //   OUTDIR/lib/<g>/tiles.png     every distinct map tile of that game (RGBA, rows of 64)      (Buu's Fury)
 //   OUTDIR/lib/<g>/maps/Z_A.bin  each map: "LKR2", u16 tw, u16 th, 5 layers of tw*th u32 cells, tw*th walk bytes

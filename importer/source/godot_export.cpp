@@ -1,4 +1,4 @@
-// godot_export game OUTDIR [ADVENTURE_DIR]
+// godot_export GAME OUTDIR [ADVENTURE_DIR]
 // Turns the player's own Legacy of Goku II (USA) game into the asset folder the Godot version loads:
 //   sprites/set_N.png + set_N.json   every sprite set (characters, forms, enemies, people): one atlas,
 //                                    a row per slot (anim*4+dir), 64x64 cells, draw offsets in the json
@@ -3801,7 +3801,7 @@ static int fix_dir(const fs::path& dir) {
 
 #include "lib_export.inc"
 int main(int argc, char** argv) {
-    if (argc < 3) { std::fprintf(stderr, "usage: godot_export game OUTDIR [ADVENTURE_LAYOUT_DIR]\n"); return 2; }
+    if (argc < 3) { std::fprintf(stderr, "usage: godot_export GAME OUTDIR [ADVENTURE_LAYOUT_DIR]\n"); return 2; }
     if (std::string(argv[1]) == "qoa2wav") {   // dev: godot_export qoa2wav IN.qoa OUT.wav (16-bit mono)
         std::ifstream in(argv[2], std::ios::binary);
         std::vector<uint8_t> d((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
@@ -3816,7 +3816,7 @@ int main(int argc, char** argv) {
         std::ofstream o(argv[3], std::ios::binary); o.write(reinterpret_cast<const char*>(w.data()), static_cast<std::streamsize>(w.size()));
         return 0;
     }
-    if (std::string(argv[1]) == "library" && argc >= 4) return libx::run(argv[2], argv[3]);   // godot_export library game OUTDIR
+    if (std::string(argv[1]) == "library" && argc >= 4) return libx::run(argv[2], argv[3]);   // godot_export library GAME OUTDIR
     if (std::string(argv[1]) == "fixqoa") {   // godot_export fixqoa FILE_OR_DIR...: mend songs recorded before v19
         int n = 0;
         for (int i = 2; i < argc; ++i) n += fs::is_directory(argv[i]) ? qoafix::fix_dir(argv[i]) : (qoafix::fix_file(argv[i]) ? 1 : 0);

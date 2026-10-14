@@ -9,7 +9,7 @@ Built for and tested on the Retroid Pocket Flip 2; works on 64-bit ARM Android d
 
 ## What the port changes (from the v42 PC release)
 - Runs the game importer on Android (built with the NDK, shipped as lib/arm64-v8a/libgodot_export.so)
-- CHOOSE MY game uses Android's file picker
+- CHOOSE MY GAME uses Android's file picker
 - Game folders (content, mod packs, adventures) unpacked into the app's storage on first start
 - Your own music from /storage/emulated/0/Music/LoG2Coop (sounds in .../LoG2Coop/sounds)
 - Gamepad navigation in the title menus; Nintendo/Retroid A/B layout by default (OPTIONS - A/B BUTTONS)
