@@ -1,5 +1,5 @@
 {
- "_help": "Special moves. Add or change freely - the game reads this file at start (a copy in the 'content' folder next to LoG2Coop.exe wins). See content/README.txt for every field. rom: the hero's own attack from the game, drawn exactly as there (content/rom_specials.json) - hold the button to keep a beam out.",
+ "_help": "Special moves. Add or change freely - the game reads this file at start (a copy in the 'content' folder next to LoG2Coop.exe wins). See content/README.txt for every field. game: the hero's own attack from the game, drawn exactly as there (content/rom_specials.json) - hold the button to keep a beam out.",
  "skills": [
   {
    "id": "kamehameha",

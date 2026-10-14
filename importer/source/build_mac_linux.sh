@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds godot_export (the ROM importer) for macOS or Linux. Needs a C++17 compiler:
+# Builds godot_export (the game importer) for macOS or Linux. Needs a C++17 compiler:
 #   macOS: xcode-select --install     Linux: sudo apt install g++
 set -e
 cd "$(dirname "$0")"

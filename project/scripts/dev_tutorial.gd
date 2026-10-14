@@ -17,7 +17,7 @@ const STEPS = [
 	["WALLS", "Choose WALL and drag over the places nobody may walk on - they turn red (WALLS on the top bar shows them). GROUND makes a place walkable again. Every edge of the map is a wall by itself."],
 	["SOMEONE TO TALK TO", "Choose PERSON. On the right type a name and what they say (one line each), then click on your map to put them there. EVENTS can make them do much more later."],
 	["A WAY IN", "Go to EARTH in the map list (top left). Choose DOOR and drag a small box where the door should be (a house's door, a cave...). Then choose your map in the list and click where you arrive. Make a door back the same way!"],
-	["SAVE", "Press SAVE (or Ctrl+S). Everything goes into the mods folder next to the game - it stays when the ROM is imported again. Every save is also kept in CHECK > HISTORY."],
+	["SAVE", "Press SAVE (or Ctrl+S). Everything goes into the mods folder next to the game - it stays when the game is imported again. Every save is also kept in CHECK > HISTORY."],
 	["TRY IT", "Press PLAY HERE on Earth near your door and walk in. F10 in the game brings you back here. That's it - you made a map!\nNext: CHECK finds mistakes, SHARE turns your work into a mod for others, TOGETHER lets friends build with you."],
 ]
 

@@ -1,5 +1,5 @@
 extends Node
-## Everything the game shows comes from the player's own ROM, turned into an "imported" folder
+## Everything the game shows comes from the player's own game, turned into an "imported" folder
 ## by godot_export(.exe) the first time (nothing of the game is shipped).
 
 var base_dir = ""
@@ -159,7 +159,7 @@ func audio_allowed() -> bool:
 	return not OS.has_feature("android") or OS.get_granted_permissions().has(ANDROID_AUDIO)
 
 # ------------------------------------------------------------------ import (first start)
-## the ROM importer: next to the program - on Android it comes in the APK as lib/arm64-v8a/libgodot_export.so
+## the game importer: next to the program - on Android it comes in the APK as lib/arm64-v8a/libgodot_export.so
 ## (Android unpacks it beside the engine's own library, the one place an app may run a program from)
 func importer_path() -> String:
 	if OS.has_feature("android"):
@@ -181,7 +181,7 @@ func start_import(rom_path: String) -> void:
 	import_thread.start(_import_worker.bind(rom_path))
 
 func _import_worker(rom_path: String) -> void:
-	# remembered for the music (the game's own songs are recorded from the ROM in the background)
+	# remembered for the music (the game's own songs are recorded from the game in the background)
 	var rf = FileAccess.open("user://rom_path.txt", FileAccess.WRITE)
 	if rf:
 		rf.store_string(rom_path)
@@ -214,7 +214,7 @@ func _import_done(code: int) -> void:
 
 # ------------------------------------------------------------------ the other games (DEV TOOLS library)
 ## Buu's Fury and The Legacy of Goku: their maps and characters, read from the player's own cartridges
-## (a .gba or its .zip next to the game, in "roms", in Downloads or next to the LoG2 ROM)
+## (a .gba or its .zip next to the game, in "games", in Downloads or next to the LoG2 game)
 const LIB_VERSION = {"bf": 1, "log1": 2}     # log1 2: its maps too
 func has_library(g: String) -> bool:
 	if base_dir == "" or not FileAccess.file_exists(base_dir.path_join("lib/%s/done.txt" % g)):
@@ -252,7 +252,7 @@ func _rom_code(path: String) -> String:
 var _unzipped = {}
 func library_roms() -> Dictionary:
 	var found = {}
-	var dirs = [exe_dir(), exe_dir().path_join("roms"), OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS), OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP)]
+	var dirs = [exe_dir(), exe_dir().path_join("games"), OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS), OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP)]
 	if FileAccess.file_exists("user://rom_path.txt"):
 		dirs.append(FileAccess.get_file_as_string("user://rom_path.txt").strip_edges().get_base_dir())
 	for d in dirs:
@@ -284,7 +284,7 @@ func import_library(force: bool = false) -> String:
 		var code = OS.execute(tool, ["library", roms[g], base_dir], out, true)
 		said.append("%s: %s" % [LIB_TITLES[g], "read" if code == 0 else "could not be read"])
 	if roms.is_empty():
-		said.append("No Buu's Fury or Legacy of Goku ROM found (put the .gba or .zip next to the game or in a \"roms\" folder)")
+		said.append("No Buu's Fury or Legacy of Goku game found (put the .gba or .zip next to the game or in a \"games\" folder)")
 	_tileset = null
 	_sets.clear()
 	_json.clear()
@@ -1112,7 +1112,7 @@ func set_for_type(t: int) -> int:
 	return int(_type_set.get(t, 18))
 
 # ------------------------------------------------------------------ sharing the game files with a phone
-## A PC that has imported its ROM hands the "imported" folder to a phone or tablet on the same network
+## A PC that has imported its game hands the "imported" folder to a phone or tablet on the same network
 ## (or over Tailscale / ZeroTier): the phone can't run the importer or the music recorder itself.
 ## Port 7778 (TCP). Only files inside the imported folder are ever sent; nothing comes in.
 const SHARE_PORT = 7778
@@ -1222,12 +1222,12 @@ func _fetch_worker(ip: String) -> void:
 		peer.poll()
 		OS.delay_msec(20)
 	if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-		_fetch_end(1, "No answer from %s. Is the game open on the PC (with its ROM read), on the same Wi-Fi?" % ip)
+		_fetch_end(1, "No answer from %s. Is the game open on the PC (with its game read), on the same Wi-Fi?" % ip)
 		return
 	peer.put_data("LIST\n".to_utf8_buffer())
 	var files = JSON.parse_string(_read_line(peer, 30000))
 	if not files is Array or files.is_empty():
-		_fetch_end(1, "The PC sent no files - start the game on the PC once and choose your ROM there first.")
+		_fetch_end(1, "The PC sent no files - start the game on the PC once and choose your game there first.")
 		return
 	for f in files:
 		fetch_total += int(f["s"])

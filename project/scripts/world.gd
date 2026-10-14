@@ -2040,7 +2040,7 @@ func _efx_obj(n: Node2D, name: String, i: int, p: Vector2) -> void:
 	var tl = Vector2(floorf(p.x) - float(f["ox"]), floorf(p.y) - float(f["oy"]))
 	n.draw_texture_rect_region(fx["tex"], Rect2(tl, Vector2(f["w"], f["h"])), Rect2(i * int(fx["cell"]), 0, f["w"], f["h"]))
 
-# ------------------------------------------------------------------ the heroes' own special effects (from the ROM)
+# ------------------------------------------------------------------ the heroes' own special effects (from the game)
 ## one frame, centred on p (the special-move sheets are drawn around their middle)
 func _efx_c(n: Node2D, name: String, i: int, p: Vector2, sc: float = 1.0, col: Color = Color(1, 1, 1), fh: bool = false, fv: bool = false) -> bool:
 	sc = 1.0      # the game's sprites are never stretched: 1:1, as on the GBA

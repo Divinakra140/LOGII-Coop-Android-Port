@@ -1,4 +1,4 @@
-# --- copyrighted: the ROM and everything read from it (each player uses their own cartridge) ---
+# --- copyrighted: the game file and everything read from it (each player uses their own cartridge) ---
 *.gba
 *.GBA
 *.sav

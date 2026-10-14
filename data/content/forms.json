@@ -1,5 +1,5 @@
 {
- "_help": "Transformations. 'set' is a sprite set from your ROM (-1 = keep the normal look). Stats multiply; 'drain_ticks' = lose 1 EP every so many ticks (60 = 1 second). See content/README.txt.",
+ "_help": "Transformations. 'set' is a sprite set from your game (-1 = keep the normal look). Stats multiply; 'drain_ticks' = lose 1 EP every so many ticks (60 = 1 second). See content/README.txt.",
  "forms": [
   {
    "id": "kaioken",

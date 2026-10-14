@@ -1,10 +1,10 @@
-LoG2 CO-OP - THE ROM IMPORTER (godot_export) - SOURCE
+LoG2 CO-OP - THE GAME IMPORTER (godot_export) - SOURCE
 ======================================================
-godot_export reads YOUR OWN Legacy of Goku II (USA) ROM and writes the game's maps, tiles, sprites and
-sounds in the form the Godot project uses. Nothing from the ROM is in this source.
+godot_export reads YOUR OWN Legacy of Goku II (USA) game and writes the game's maps, tiles, sprites and
+sounds in the form the Godot project uses. Nothing from the game is in this source.
 
 Files: tools/godot_export.cpp (+ tools/lib_export.inc, included by it) and src/ (the map builder,
-tile and sprite readers, the ROM catalog). Plain C++17, no other libraries.
+tile and sprite readers, the game catalog). Plain C++17, no other libraries.
 
 BUILD
   macOS / Linux:   ./build_mac_linux.sh          (or: c++ -O2 -std=c++17 -o godot_export
@@ -15,12 +15,12 @@ BUILD
                    src\rom_tiles.cpp src\rom_sprites.cpp src\rom_catalog.cpp
 
 USE
-  The game runs it by itself after you choose your ROM. It looks for it here:
+  The game runs it by itself after you choose your game. It looks for it here:
     - running the source project in the Godot editor: next to project.godot
     - the exported game: next to the game program (macOS: inside the .app, Contents/MacOS/)
   Its name: godot_export.exe on Windows, godot_export on macOS / Linux.
   macOS: if it is blocked ("cannot be opened"), run once:   xattr -d com.apple.quarantine godot_export
-  By hand:  ./godot_export "path/to/your rom.gba" OUTPUT_FOLDER
-            ./godot_export library "Buu's Fury or Legacy of Goku rom.gba" OUTPUT_FOLDER   (OTHER GAMES)
+  By hand:  ./godot_export "path/to/your game.gba" OUTPUT_FOLDER
+            ./godot_export library "Buu's Fury or Legacy of Goku game.gba" OUTPUT_FOLDER   (OTHER GAMES)
 
 The Godot project itself is made with Godot 4.3.

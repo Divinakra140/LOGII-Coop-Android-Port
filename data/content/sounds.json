@@ -1,5 +1,5 @@
 {
- "_help": "Which of the game's own sound samples plays for each sound. The samples are read from your ROM into imported/sounds/sfx_00.wav ... sfx_63.wav (open them in any player to listen). A list = a random one each time. A file sounds/<name>.ogg next to LoG2Coop.exe still wins over these. Remove a name to get the game's little made-up sound back.",
+ "_help": "Which of the game's own sound samples plays for each sound. The samples are read from your game into imported/sounds/sfx_00.wav ... sfx_63.wav (open them in any player to listen). A list = a random one each time. A file sounds/<name>.ogg next to LoG2Coop.exe still wins over these. Remove a name to get the game's little made-up sound back.",
  "sounds": {
   "punch": [
    37,

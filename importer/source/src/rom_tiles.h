@@ -9,7 +9,7 @@
 // the game copies in while it runs (not in the sheets).
 //
 // Tile ids: equal id = the tile looks exactly the same (same 64 pixels), in
-// any map. Nothing is shipped: everything comes from the player's ROM.
+// any map. Nothing is shipped: everything comes from the player's game.
 #include <cstdint>
 #include <string>
 #include <vector>

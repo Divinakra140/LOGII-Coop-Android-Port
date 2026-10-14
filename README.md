@@ -5,11 +5,11 @@ Android port of **Legacy of Goku II - Co-op (Godot)** by **Puni Puni**
 Built for and tested on the Retroid Pocket Flip 2; works on 64-bit ARM Android devices (Android 7+).
 
 **No game data is included.** On first start the app asks for your own *Dragon Ball Z - The Legacy of Goku II (USA)*
-.gba (CHOOSE MY ROM) and reads its maps, sprites and sounds on the device (about 30 seconds).
+.gba (CHOOSE MY GAME) and reads its maps, sprites and sounds on the device (about 30 seconds).
 
 ## What the port changes (from the v42 PC release)
-- Runs the ROM importer on Android (built with the NDK, shipped as lib/arm64-v8a/libgodot_export.so)
-- CHOOSE MY ROM uses Android's file picker
+- Runs the game importer on Android (built with the NDK, shipped as lib/arm64-v8a/libgodot_export.so)
+- CHOOSE MY game uses Android's file picker
 - Game folders (content, mod packs, adventures) unpacked into the app's storage on first start
 - Your own music from /storage/emulated/0/Music/LoG2Coop (sounds in .../LoG2Coop/sounds)
 - Gamepad navigation in the title menus; Nintendo/Retroid A/B layout by default (OPTIONS - A/B BUTTONS)
@@ -20,7 +20,7 @@ Built for and tested on the Retroid Pocket Flip 2; works on 64-bit ARM Android d
 ## Layout
 - project/ - the Godot project (Godot 4.7.2; originally made with 4.3)
 - data/ - Puni Puni's game folders packed into the APK: content/, modpacks/, adventures/, music/
-- importer/source/ - the ROM importer (plain C++17, no other libraries)
+- importer/source/ - the game importer (plain C++17, no other libraries)
 - tools/ - make_pack.py (packs data/), export.sh (build + sign), run_on_device.sh (install via adb)
 
 ## Building

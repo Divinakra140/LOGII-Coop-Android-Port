@@ -1,5 +1,5 @@
 extends Node
-## Start: import the ROM once, pick a fighter and a planet, play solo / host / join (LAN or Hamachi).
+## Start: import the game once, pick a fighter and a planet, play solo / host / join (LAN or Hamachi).
 
 var ui: Control
 var world: Node
@@ -112,18 +112,18 @@ func _button(parent: Node, t: String, f: Callable) -> Button:
 	parent.add_child(b)
 	return b
 
-# ------------------------------------------------------------------ first start: your ROM
+# ------------------------------------------------------------------ first start: your game
 func _import_screen() -> void:
 	_clear()
 	var v = _box()
 	_label(v, "LEGACY OF GOKU II - CO-OP (GODOT)", 12, Color(1, 0.85, 0.3))
 	if Assets.base_dir != "" and Assets.import_version() < Assets.IMPORT_VERSION:
-		_label(v, "NEW: each land is ONE world you walk through (roads join its parts), and the heroes' special moves use the game's own effects. Your ROM is read once more (a minute or two). Your fighters and the recorded music are kept.", 8, Color(0.6, 1, 0.8))
+		_label(v, "NEW: each land is ONE world you walk through (roads join its parts), and the heroes' special moves use the game's own effects. Your game is read once more (a minute or two). Your fighters and the recorded music are kept.", 8, Color(0.6, 1, 0.8))
 	_label(v, "First start: choose your own Legacy of Goku II (USA) .gba file. Its pictures, maps and enemies are read from it once (about a minute) - nothing of the game comes with this download.", 8)
-	_button(v, "CHOOSE MY ROM...", _pick_rom)
+	_button(v, "CHOOSE MY GAME...", _pick_rom)
 	status = _label(v, "", 8, Color(0.7, 1, 0.7))
-	# a phone / tablet: the files can also come from your PC (where the ROM was read and the music recorded)
-	_label(v, "OR FROM A PC: open the game on your PC (it must have read your ROM), connect both to the same Wi-Fi, type the PC's address (shown in the PC's menu) and press GET:", 7, Color(0.75, 0.85, 1))
+	# a phone / tablet: the files can also come from your PC (where the game was read and the music recorded)
+	_label(v, "OR FROM A PC: open the game on your PC (it must have read your game), connect both to the same Wi-Fi, type the PC's address (shown in the PC's menu) and press GET:", 7, Color(0.75, 0.85, 1))
 	var hf = HBoxContainer.new()
 	v.add_child(hf)
 	fetch_ip = LineEdit.new()
@@ -138,15 +138,15 @@ func _import_screen() -> void:
 	file_dialog = FileDialog.new()
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
 	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
-	file_dialog.filters = PackedStringArray(["*.gba ; GBA ROM"])
+	file_dialog.filters = PackedStringArray(["*.gba ; GBA game"])
 	file_dialog.size = Vector2i(360, 200)
 	if OS.has_feature("android"):
-		# Android's own file picker (it knows no ".gba" type: every file is shown, the ROM is checked after)
+		# Android's own file picker (it knows no ".gba" type: every file is shown, the game is checked after)
 		file_dialog.use_native_dialog = true
 		file_dialog.filters = PackedStringArray()
 	file_dialog.file_selected.connect(_rom_chosen)
 	ui.add_child(file_dialog)
-	# a ROM next to the game is found by itself
+	# a game file (.gba) next to the program is found by itself
 	var d = DirAccess.open(Assets.exe_dir())
 	if d:
 		for f in d.get_files():
@@ -155,28 +155,28 @@ func _import_screen() -> void:
 				return
 
 func _pick_rom() -> void:
-	print("[main] CHOOSE MY ROM")
+	print("[main] CHOOSE MY GAME")
 	file_dialog.popup_centered()
 
 func _rom_chosen(path: String) -> void:
-	print("[main] ROM chosen: ", path)
+	print("[main] game chosen: ", path)
 	if OS.has_feature("android"):
 		# the picker hands a file the importer cannot open itself: a copy goes into the game's own folder
-		var rom = FileAccess.get_file_as_bytes(path)
-		print("[main] read ", rom.size(), " bytes (", FileAccess.get_open_error(), ")")
-		if rom.size() < 0x100000 or rom.slice(0xA0, 0xAC).get_string_from_ascii().strip_edges() == "":
-			status.text = "That file could not be read as a GBA ROM - choose your Legacy of Goku II (USA) .gba (not a .zip)."
+		var gba = FileAccess.get_file_as_bytes(path)
+		print("[main] read ", gba.size(), " bytes (", FileAccess.get_open_error(), ")")
+		if gba.size() < 0x100000 or gba.slice(0xA0, 0xAC).get_string_from_ascii().strip_edges() == "":
+			status.text = "That file could not be read as a GBA game - choose your Legacy of Goku II (USA) .gba (not a .zip)."
 			return
-		var copy = Assets.exe_dir().path_join("rom.gba")
+		var copy = Assets.exe_dir().path_join("game.gba")
 		if path != copy:
 			var fa = FileAccess.open(copy, FileAccess.WRITE)
 			if fa == null:
-				status.text = "Could not copy the ROM into the game's folder."
+				status.text = "Could not copy the game file into the app's folder."
 				return
-			fa.store_buffer(rom)
+			fa.store_buffer(gba)
 			fa.close()
 		path = copy
-	status.text = "Reading your ROM... (about a minute)"
+	status.text = "Reading your game... (about a minute)"
 	Assets.start_import(path)
 	set_process(true)
 
@@ -205,7 +205,7 @@ func _process(_dt: float) -> void:
 			Assets.start_sharing()
 			_menu()
 		else:
-			status.text = "That did not work: is it the USA Legacy of Goku II ROM?\n" + Assets.import_log.right(300)
+			status.text = "That did not work: is it the USA Legacy of Goku II game?\n" + Assets.import_log.right(300)
 			Assets.import_thread = null
 
 # ------------------------------------------------------------------ the menu
@@ -524,7 +524,7 @@ func _on_started() -> void:
 ## The world lives on this PC: players JOIN with its IP whenever they like, the world is saved every 10 s.
 func _start_server() -> void:
 	if not Assets.ready_to_play():
-		print("[server] no imported folder: start LoG2Coop.exe once normally and choose your ROM first")
+		print("[server] no imported folder: start LoG2Coop.exe once normally and choose your game first")
 		get_tree().quit(1)
 		return
 	Assets.load_data()

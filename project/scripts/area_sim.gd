@@ -470,7 +470,7 @@ func _windup(e: Dictionary, nxt: String, ticks: int) -> void:
 	e["state"] = "windup"; e["t"] = 0; e["next"] = nxt; e["wind"] = ticks
 	e["anim"] = 2; e["frame"] = 0
 
-## what a foe throws, as in the game (sprites read from your ROM: imported/fx/e_*.png):
+## what a foe throws, as in the game (sprites read from your game: imported/fx/e_*.png):
 ##   laser  - the flying robots' zig-zag laser, straight along a direction
 ##   fire   - a fireball (one way per direction) that bursts into flame
 ##   bomb   - a lit bomb thrown in an arc; it lands, the fuse burns, then it goes off

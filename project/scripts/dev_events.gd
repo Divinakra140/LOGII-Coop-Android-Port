@@ -354,7 +354,7 @@ func _build_step() -> void:
 				_edit(step_box, k, str(st.get(k, "")), func(v): st[k] = v.to_upper() if k == "who" else v; _refresh_step(st, warn))
 	step_box.add_child(warn)
 	if d in ["say", "choice"]:
-		var lb = Button.new(); lb.text = "LINES FROM THE GAME..."; lb.tooltip_text = "Every line of Legacy of Goku II read from your ROM: search, click one"
+		var lb = Button.new(); lb.text = "LINES FROM THE GAME..."; lb.tooltip_text = "Every line of Legacy of Goku II read from your game: search, click one"
 		lb.pressed.connect(func(): _line_library(st)); step_box.add_child(lb)
 	if STEP_FIELDS.get(d, []).any(func(ff): return ff[0] == "x") or d in ["open_area", "close_area"]:
 		var mb = Button.new(); mb.text = "X, Y FROM THE MAP VIEW (its middle)"
@@ -472,7 +472,7 @@ func _test() -> void:
 	tools.play_here(tools.cam.position, {"god": true})
 
 
-## the lines of the game (Legacy of Goku II, read from your ROM at the import): search and pick one
+## the lines of the game (Legacy of Goku II, read from your game at the import): search and pick one
 func _line_library(st: Dictionary) -> void:
 	var all = Assets.json(Assets.base_dir.path_join("data/strings.json"))
 	var lines = []
@@ -528,5 +528,5 @@ func _line_library(st: Dictionary) -> void:
 	add_child(d)
 	fill.call()
 	if lines.is_empty():
-		info.text = "No lines found - import your ROM first (the game reads them from it)."
+		info.text = "No lines found - import your game first (the game reads them from it)."
 	d.popup_centered()

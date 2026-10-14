@@ -1,5 +1,5 @@
 #!/bin/zsh
-# export.sh [extra command line args]  -> out/LoG2Coop.apk: Godot's export + the ROM importer (lib/arm64-v8a/libgodot_export.so),
+# export.sh [extra command line args]  -> out/LoG2Coop.apk: Godot's export + the game importer (lib/arm64-v8a/libgodot_export.so),
 # aligned and signed with keys/.  PKG=some.other.name exports under another package (a test install beside the real one).
 # Set GODOT, ANDROID_SDK and JAVA_HOME for your machine (or edit the defaults below).
 B="$(cd "$(dirname "$0")/.." && pwd)"

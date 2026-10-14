@@ -1,5 +1,5 @@
 // rom_sprites.h - read Legacy of Goku II (USA) character sprites straight from
-// the player's own ROM (for the start menu's character select). Nothing from
+// the player's own game (for the start menu's character select). Nothing from
 // the game is bundled; this decodes the cartridge data at run time.
 #pragma once
 

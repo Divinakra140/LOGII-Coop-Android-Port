@@ -56,7 +56,7 @@ forms.json - TRANSFORMATIONS
 {"id": "ssj_goku", "name": "SUPER SAIYAN", "who": "GOKU", "level": 18, "set": 61,
  "str": 1.7, "pwr": 1.7, "end": 1.3, "speed": 1.25, "drain_ticks": 90, "aura": "ffe050"}
 
-  set          the look: a sprite set number from your ROM (-1 = keep the normal look)
+  set          the look: a sprite set number from your game (-1 = keep the normal look)
                Some sets: Gohan 53 55 56 57 58(SSJ) 59(SSJ2) - Goku 60 61(SSJ) - Piccolo 103 104 -
                Vegeta 137 138 139(SSJ) 140(Super Vegeta) - Trunks 128 129 130(SSJ) 132 133 134 135 - Mr. Satan 72
                (any set works - even an enemy's! open the "imported/sprites" folder to see them all)
@@ -97,7 +97,7 @@ Without a file the game plays little tunes it writes itself from music.json:
 
 sounds.json - SOUND EFFECTS
 ---------------------------
-The sounds are the game's own samples, read from your ROM into imported/sounds/sfx_00.wav ... sfx_63.wav
+The sounds are the game's own samples, read from your game into imported/sounds/sfx_00.wav ... sfx_63.wav
 (open them in any player). sounds.json says which plays for what - a list means a random one each time:
   "punch": [37, 38],   "ki": [13, 14],   "hit": [34, 35, 36],   "boom": [20, 21] ...
 Listen to all 64 in the game: MENU - OPTIONS - SOUND TEST (A: next), then put the numbers you like here.
@@ -108,7 +108,7 @@ Your own file still wins: sounds/<name>.ogg (or .mp3) next to LoG2Coop.exe.
 
 enemies.json - HOW FOES FIGHT
 -----------------------------
-Every foe fights with ITS OWN ATTACK FROM THE GAME, drawn with the game's own sprites (read from your ROM):
+Every foe fights with ITS OWN ATTACK FROM THE GAME, drawn with the game's own sprites (read from your game):
   laser     the flying robots: they get in line with you, then fire a straight zig-zag laser
   fireball  the fire-breathers spit fireballs that burst into flame (big ones leave burning ground)
   bomber    the bandits throw lit bombs in an arc - a ring shows where it lands, run before the fuse burns down
@@ -157,7 +157,7 @@ is told where. Beat it together: big EXP, a shower of loot, and the LEGEND HUNTE
 Its moves are the "boss" style in enemies.json.
 
 PEOPLE - people.json
-The people in the lands come from your ROM (where they stand, how they look, what they say).
+The people in the lands come from your game (where they stand, how they look, what they say).
 people.json adds to that:
   "talk_range"  how near (pixels) you must stand to talk with A
   "heroes"      names whose lines are the player's own words (left out)

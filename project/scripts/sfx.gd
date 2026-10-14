@@ -1,6 +1,6 @@
 extends Node
 ## Sound effects, best first: a file sounds/<name>.ogg / .mp3 next to LoG2Coop.exe; the GAME'S OWN SAMPLES,
-## read from your ROM at import (imported/sounds/sfx_NN.wav - content/sounds.json says which plays for what,
+## read from your game at import (imported/sounds/sfx_NN.wav - content/sounds.json says which plays for what,
 ## a list = a random one of them each time); otherwise a little sound made here from waves and noise.
 ## names: punch kick ki beam_charge beam dash slash bomb boom wave flash heal hit crit hurt die
 ##        pickup item zeni levelup transform menu move error
@@ -137,7 +137,7 @@ func play_stream(st: AudioStream, vol: float = 1.0) -> void:
 			p.play()
 			return
 
-## after the ROM is (re)imported
+## after the game is (re)imported
 func reload() -> void:
 	_samples.clear()
 	_own = null

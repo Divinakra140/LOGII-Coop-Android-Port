@@ -1,11 +1,11 @@
-// godot_export ROM OUTDIR [ADVENTURE_DIR]
-// Turns the player's own Legacy of Goku II (USA) ROM into the asset folder the Godot version loads:
+// godot_export game OUTDIR [ADVENTURE_DIR]
+// Turns the player's own Legacy of Goku II (USA) game into the asset folder the Godot version loads:
 //   sprites/set_N.png + set_N.json   every sprite set (characters, forms, enemies, people): one atlas,
 //                                    a row per slot (anim*4+dir), 64x64 cells, draw offsets in the json
 //   maps/Z_A/layerK.png, walk.png, meta.json   every map: its 4 layers, collision, exits, objects
 //   floors/<adventure>/Z_A/...       the hand-made adventures' areas (from the shipped layout files)
 //   data/*.json                      enemy stats, forms, starting fighters, level table, text
-// Nothing of the game is shipped with the Godot version: it all comes from here, from your ROM.
+// Nothing of the game is shipped with the Godot version: it all comes from here, from your game.
 #include <array>
 #include <cctype>
 #include <unordered_map>
@@ -160,7 +160,7 @@ static int export_sprites(const fs::path& dir) {
 }
 
 
-// effect animations (12-byte frames in ROM tables, as the sprite sets): fx/NAME.png, a row per direction
+// effect animations (12-byte frames in game tables, as the sprite sets): fx/NAME.png, a row per direction
 // the foes' own attacks, as the game draws them: frame tables {offset x/y, w, h; OAM attributes; raw tiles}
 // (laser: bare 8x8 tiles). Each sheet: one row of frames in square cells, offsets in the json.
 static void export_enemy_fx(const fs::path& dir) {
@@ -504,7 +504,7 @@ static bool load_gen(const fs::path& p, Area* A, std::string* extra) {
         }
     }
     ex += "]";
-    // the area's own priorities / layer kinds come from the ROM map it stands on
+    // the area's own priorities / layer kinds come from the game map it stands on
     SrcMap sm;
     if (load_src(R, A->z, A->a, &sm)) for (int k = 0; k < 4; ++k) { A->pri[k] = sm.pri[k]; if (!sm.tilemap[k]) A->tilemap[k] = false; }
     *extra = ex + ",\"arrival\":[" + std::to_string(sx) + "," + std::to_string(sy) + "]";
@@ -3801,7 +3801,7 @@ static int fix_dir(const fs::path& dir) {
 
 #include "lib_export.inc"
 int main(int argc, char** argv) {
-    if (argc < 3) { std::fprintf(stderr, "usage: godot_export ROM OUTDIR [ADVENTURE_LAYOUT_DIR]\n"); return 2; }
+    if (argc < 3) { std::fprintf(stderr, "usage: godot_export game OUTDIR [ADVENTURE_LAYOUT_DIR]\n"); return 2; }
     if (std::string(argv[1]) == "qoa2wav") {   // dev: godot_export qoa2wav IN.qoa OUT.wav (16-bit mono)
         std::ifstream in(argv[2], std::ios::binary);
         std::vector<uint8_t> d((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
@@ -3816,7 +3816,7 @@ int main(int argc, char** argv) {
         std::ofstream o(argv[3], std::ios::binary); o.write(reinterpret_cast<const char*>(w.data()), static_cast<std::streamsize>(w.size()));
         return 0;
     }
-    if (std::string(argv[1]) == "library" && argc >= 4) return libx::run(argv[2], argv[3]);   // godot_export library ROM OUTDIR
+    if (std::string(argv[1]) == "library" && argc >= 4) return libx::run(argv[2], argv[3]);   // godot_export library game OUTDIR
     if (std::string(argv[1]) == "fixqoa") {   // godot_export fixqoa FILE_OR_DIR...: mend songs recorded before v19
         int n = 0;
         for (int i = 2; i < argc; ++i) n += fs::is_directory(argv[i]) ? qoafix::fix_dir(argv[i]) : (qoafix::fix_file(argv[i]) ? 1 : 0);
@@ -3825,7 +3825,7 @@ int main(int argc, char** argv) {
     }
     std::ifstream f(argv[1], std::ios::binary);
     g_rom.assign((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
-    if (g_rom.size() < 0x800000 || std::memcmp(&g_rom[0xAC], "ALFE", 4) != 0) { std::fprintf(stderr, "[export] not a Legacy of Goku II (USA) ROM: %s\n", argv[1]); return 1; }
+    if (g_rom.size() < 0x800000 || std::memcmp(&g_rom[0xAC], "ALFE", 4) != 0) { std::fprintf(stderr, "[export] not a Legacy of Goku II (USA) game: %s\n", argv[1]); return 1; }
     R = Rom{g_rom.data(), g_rom.size()};
     romtiles::init(R);
     romtiles::palette_rgb(g_bgpal);
@@ -3862,7 +3862,7 @@ int main(int argc, char** argv) {
         export_earth(out / "kit" / "lands");
     }
     if (argc > 3) { const int fl = export_floors(argv[3], out / "floors"); std::fprintf(stderr, "[export] %d adventure areas\n", fl); }
-    // (no music from the ROM: you bring your own songs)
+    // (no music from the game: you bring your own songs)
     write_text(out / "version.txt", "19\n");
     std::fprintf(stderr, "[export] done: %s\n", out.string().c_str());
     return 0;

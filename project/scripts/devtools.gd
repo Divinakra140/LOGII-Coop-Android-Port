@@ -2,7 +2,7 @@ extends Node2D
 ## DEV TOOLS - your team works on the game here, no programming: the MAP EDITOR (tiles on all 5 layers,
 ## walls, foes, people, treasure, doors, copy and paste of whole places, maps of your own) and the editors for
 ## HEROES, ENEMIES, MOVES, FORMS, BLASTS and MISSIONS. Everything is saved in the "mods" and "content" folders
-## next to LoG2Coop.exe (a new import of the ROM never loses it). See "DEV TOOLS.txt".
+## next to LoG2Coop.exe (a new import of the game never loses it). See "DEV TOOLS.txt".
 
 signal closed
 signal tune_requested
@@ -375,7 +375,7 @@ func save() -> void:
 	if area.has("custom"):
 		ok = ok and Mods.save_custom(str(area["custom"]), area)
 	dirty = false
-	_say("Saved to mods/maps (your team's changes stay when the ROM is imported again)." if ok else "Could not save - is the game folder read-only?")
+	_say("Saved to mods/maps (your team's changes stay when the game is imported again)." if ok else "Could not save - is the game folder read-only?")
 
 # ------------------------------------------------------------------ input
 func _unhandled_input(ev: InputEvent) -> void:

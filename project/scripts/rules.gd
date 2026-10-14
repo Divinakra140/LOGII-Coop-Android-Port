@@ -56,7 +56,7 @@ const SPAWN = [
 	[54,125,2],[94,125,2], [102,144,2], [17,146,2],[74,146,2],[57,148,2],[104,149,2],
 	[31,37,4],[32,38,4],[33,39,4], [37,44,4],[38,45,4],[39,46,4],[40,47,4], [65,77,4],[66,78,4],[67,79,4],
 	[80,105,8],[88,106,8], [11,123,8],[16,124,8],[99,122,8], [101,127,8],
-	# 45-49: the first game's enemies in the PC mod (their pictures come from the LoG1 ROM there) -
+	# 45-49: the first game's enemies in the PC mod (their pictures come from the LoG1 game there) -
 	# here the LoG2 enemy each one fought like
 	[17,146,2],[8,17,1],[47,112,2],[54,125,2],[58,63,2]]
 # enemy type -> sprite set (the game's own pairs)

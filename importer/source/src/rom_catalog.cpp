@@ -1,9 +1,9 @@
 // rom_catalog.cpp - "--catalogue DIR": everything the world builder can use,
-// read from the player's own ROM and written to DIR (nothing is shipped):
+// read from the player's own game and written to DIR (nothing is shipped):
 //   maps.csv       every map: zone, area, place name, size, layers, exits, objects
 //   objects.csv    every object record: enemies, people, things (with positions)
 //   strings.txt    the game's text table (names, items, techniques, places)
-//   maps/*.png     each map drawn from the ROM (all its layers)
+//   maps/*.png     each map drawn from the game (all its layers)
 //   tiles/*.png    every distinct map tile of the game (pink = see-through)
 #include <algorithm>
 #include <cstdio>
@@ -138,7 +138,7 @@ bool save_png_gray(const std::string& path, const std::vector<uint8_t>& g, int w
 int run(const std::string& rom_path, const std::string& dir) {
     std::ifstream in(rom_path, std::ios::binary);
     std::vector<uint8_t> romv((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
-    if (romv.size() < 0x400000) { std::fprintf(stderr, "[catalogue] cannot read the ROM: %s\n", rom_path.c_str()); return 1; }
+    if (romv.size() < 0x400000) { std::fprintf(stderr, "[catalogue] cannot read the game: %s\n", rom_path.c_str()); return 1; }
     const mapbuild::Rom rom{romv.data(), romv.size()};
     romtiles::init(rom);
     namespace fs = std::filesystem;

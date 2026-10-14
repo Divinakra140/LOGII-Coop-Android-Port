@@ -1,6 +1,6 @@
 extends Node
 ## YOUR TEAM'S EDITS - everything the DEV TOOLS change lives in the "mods" folder next to LoG2Coop.exe
-## (and in "content" for characters, moves and missions), so a new import of the ROM never loses it:
+## (and in "content" for characters, moves and missions), so a new import of the game never loses it:
 ##   mods/maps/<map>.json        changes to one of the game's maps: tiles, walls, foes, people, doors, items
 ##   mods/maps/custom/<name>.bin  a map your team made (its tiles and walls)  + <name>.json (its name, doors...)
 ## A map key is the game's own: "land/0/0" is EARTH; "custom/<name>" a map of your own.

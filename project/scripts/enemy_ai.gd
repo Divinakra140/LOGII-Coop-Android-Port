@@ -1,6 +1,6 @@
 class_name EnemyAI
 extends RefCounted
-## LoG2's own enemy AI, run from the game's behaviour scripts (read from your ROM at import: data/ai.json).
+## LoG2's own enemy AI, run from the game's behaviour scripts (read from your game at import: data/ai.json).
 ##
 ## Every foe kind starts in one behaviour of the game's table (the enemy table's "w8"). A behaviour is a
 ## little tree: sequences, "do these together", distance checks, chances per frame, waits, and actions
