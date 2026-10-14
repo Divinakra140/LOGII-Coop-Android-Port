@@ -49,8 +49,25 @@ func world_id() -> String:
 func save_world() -> void:
 	pass
 
+## the host turned this player away (a private game's wrong password)
+@rpc("authority", "reliable")
+func refused(why: String) -> void:
+	print("[game] the host turned us away: ", why)
+	net_error = why
+	reconnect_tries = 0
+	refused_why = why
+	lobby_changed.emit()
+var refused_why = ""
+
 ## the host went away: keep trying to get back in (the world is kept on their side)
 func _on_server_lost() -> void:
+	if refused_why != "":
+		net_error = refused_why
+		refused_why = ""
+		lobby_changed.emit()
+		if multiplayer.has_multiplayer_peer():
+			multiplayer.multiplayer_peer = null
+		return
 	net_error = "THE HOST LEFT"
 	lobby_changed.emit()
 	if in_game:
@@ -61,6 +78,9 @@ func _on_server_lost() -> void:
 		multiplayer.multiplayer_peer = null
 
 func _process(dt: float) -> void:
+	_lan_host_poll()
+	if _lan_scan != null:
+		_lan_scan_poll(dt)
 	_world_boss_tick(dt)
 	if reconnect_tries > 0:
 		reconnect_t -= dt
@@ -68,7 +88,10 @@ func _process(dt: float) -> void:
 			reconnect_t = 3.0
 			reconnect_tries -= 1
 			if not multiplayer.has_multiplayer_peer() or multiplayer.multiplayer_peer.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
-				join_game(str(cfg["ip"]))
+				if cfg.get("online", false):
+					join_game_online(Online.join_port)
+				else:
+					join_game(str(cfg["ip"]))
 			if reconnect_tries == 0:
 				toast.emit("COULD NOT REACH THE HOST - PLAYING ON ALONE (Q IN THE PAUSE MENU: BACK)", Color(1, 0.5, 0.5))
 	# a partner we have not heard from for 4 seconds has gone (left, or dropped out of split screen)
@@ -97,6 +120,79 @@ func difficulty_hp() -> float:
 func difficulty_atk() -> float:
 	return [0.75, 1.0, 1.3][clampi(int(cfg["difficulty"]), 0, 2)]
 
+# ------------------------------------------------------------------ games on this Wi-Fi (Android port)
+## A host (HOST ONLINE or WORLD SERVER) answers "LOG2?" on LAN_PORT with its name, planet and players.
+## FIND GAMES ON WI-FI asks every address of the network one by one (phones often drop broadcasts).
+const LAN_PORT = 7778
+var _lan_host: PacketPeerUDP = null
+var _lan_scan: PacketPeerUDP = null
+var _lan_scan_t = 0.0
+var lan_found = {}       # ip -> {"name", "planet", "players", "server", "seen"}
+
+func lan_host_start() -> void:
+	lan_host_stop()
+	_lan_host = PacketPeerUDP.new()
+	if _lan_host.bind(LAN_PORT) != OK:
+		_lan_host = null
+
+func lan_host_stop() -> void:
+	if _lan_host != null:
+		_lan_host.close()
+		_lan_host = null
+
+func _lan_host_poll() -> void:
+	while _lan_host != null and _lan_host.get_available_packet_count() > 0:
+		var pkt = _lan_host.get_packet().get_string_from_utf8()
+		var ip = _lan_host.get_packet_ip()
+		var port = _lan_host.get_packet_port()
+		if pkt != "LOG2?" or ip == "":
+			continue
+		var server = str(cfg.get("mode", "")) == "server"
+		var info = {"name": "SERVER" if server else str(cfg.get("name", "HOST")), "planet": planet.title if planet != null else "",
+			"character": "SERVER (NO PLAYER)" if server else str(Assets.CHARACTERS[clampi(int(cfg.get("character", 0)), 0, Assets.CHARACTERS.size() - 1)]),
+			"players": remote_states.size() + (0 if server else 1), "server": server}
+		_lan_host.set_dest_address(ip, port)
+		_lan_host.put_packet(("LOG2!" + JSON.stringify(info)).to_utf8_buffer())
+
+func lan_scan_start() -> void:
+	lan_scan_stop()
+	lan_found.clear()
+	_lan_scan = PacketPeerUDP.new()
+	for t in 20:      # any free port to hear the answers on
+		if _lan_scan.bind(40000 + randi() % 20000) == OK:
+			break
+	_lan_scan_t = 0.0
+
+func lan_scan_stop() -> void:
+	if _lan_scan != null:
+		_lan_scan.close()
+		_lan_scan = null
+
+func _lan_scan_poll(dt: float) -> void:
+	_lan_scan_t -= dt
+	if _lan_scan_t <= 0.0:
+		_lan_scan_t = 2.0
+		for a in IP.get_local_addresses():
+			if a.count(".") != 3 or a.begins_with("127.") or a.begins_with("169.254."):
+				continue
+			var pre = a.substr(0, a.rfind(".") + 1)
+			for h in range(1, 255):
+				_lan_scan.set_dest_address(pre + str(h), LAN_PORT)
+				_lan_scan.put_packet("LOG2?".to_utf8_buffer())
+	var now = Time.get_ticks_msec()
+	while _lan_scan.get_available_packet_count() > 0:
+		var pkt = _lan_scan.get_packet().get_string_from_utf8()
+		var ip = _lan_scan.get_packet_ip()
+		if not pkt.begins_with("LOG2!"):
+			continue
+		var info = JSON.parse_string(pkt.substr(5))
+		if info is Dictionary:
+			info["seen"] = now
+			lan_found[ip] = info
+	for ip in lan_found.keys():
+		if now - int(lan_found[ip]["seen"]) > 7000:
+			lan_found.erase(ip)
+
 # ------------------------------------------------------------------ connecting
 func host_game() -> bool:
 	var p = ENetMultiplayerPeer.new()
@@ -108,7 +204,41 @@ func host_game() -> bool:
 	peers.clear()
 	peers[1] = {"name": lobby_name(), "character": cfg["character"]}
 	lobby_changed.emit()
+	lan_host_start()
 	return true
+
+## GLOBAL MULTIPLAYER: the same game over WebSocket (it rides the ZeroTier bridge as TCP - see online.gd)
+func host_game_online(password: String) -> bool:
+	var p = WebSocketMultiplayerPeer.new()
+	var err = p.create_server(Online.PORT, "127.0.0.1")
+	if err != OK:
+		net_error = "COULD NOT START THE GAME SERVER"
+		return false
+	multiplayer.multiplayer_peer = p
+	cfg["online"] = true
+	peers.clear()
+	peers[1] = {"name": lobby_name(), "character": cfg["character"]}
+	lobby_changed.emit()
+	Online.host(password)
+	return true
+
+## port: the local end of the bridge to the host (Online.join)
+func join_game_online(port: int) -> bool:
+	if port <= 0:
+		net_error = "COULD NOT REACH THAT GAME"
+		return false
+	var p = WebSocketMultiplayerPeer.new()
+	var err = p.create_client("ws://127.0.0.1:%d" % port)
+	if err != OK:
+		net_error = "COULD NOT REACH THAT GAME"
+		return false
+	multiplayer.multiplayer_peer = p
+	cfg["online"] = true
+	return true
+
+## the players connected to this host (for the lobby list)
+func remote_players_count() -> int:
+	return multiplayer.get_peers().size() if multiplayer.has_multiplayer_peer() else 0
 
 func join_game(ip: String) -> bool:
 	var p = ENetMultiplayerPeer.new()
@@ -120,6 +250,11 @@ func join_game(ip: String) -> bool:
 	return true
 
 func leave() -> void:
+	lan_host_stop()
+	Online.stop_hosting()
+	if not cfg.get("online", false) or reconnect_tries == 0:
+		Online.stop_joining()
+	cfg.erase("online")
 	save_world()
 	reconnect_tries = 0
 	if multiplayer.has_multiplayer_peer():
@@ -139,7 +274,7 @@ func _on_connected() -> void:
 		reconnect_tries = 0
 		net_error = ""
 		toast.emit("BACK IN THE WORLD", Color(0.6, 1, 0.6))
-	rpc_id(1, "hello", lobby_name(), int(cfg["character"]))
+	rpc_id(1, "hello", lobby_name(), int(cfg["character"]), Online.join_proof if cfg.get("online", false) else "")
 
 func _on_peer_connected(_id: int) -> void:
 	lobby_changed.emit()
@@ -155,10 +290,15 @@ func _on_peer_disconnected(id: int) -> void:
 		toast.emit("A PLAYER LEFT THE WORLD", Color(1, 0.7, 0.4))
 
 @rpc("any_peer", "reliable")
-func hello(n: String, ch: int) -> void:
+func hello(n: String, ch: int, proof: String = "") -> void:
 	if not is_host():
 		return
 	var id = multiplayer.get_remote_sender_id()
+	if cfg.get("online", false) and not Online.accepts(proof):      # a private game: the password was wrong
+		print("[server] turned away %s: wrong password" % n)
+		rpc_id(id, "refused", "WRONG PASSWORD")
+		get_tree().create_timer(1.0).timeout.connect(func(): if multiplayer.has_multiplayer_peer(): multiplayer.multiplayer_peer.disconnect_peer(id))
+		return
 	peers[id] = {"name": n, "character": ch}
 	rpc("lobby", peers)
 	lobby_changed.emit()

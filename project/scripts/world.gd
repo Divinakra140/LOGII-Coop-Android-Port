@@ -66,6 +66,7 @@ class Local:
 	var mood = {}                 # the MOOD box you stand in (darkness, weather, music)
 	var talk_hold = false         # A still held from a talk press (it must not punch)
 	var near_npc = -1             # the person close enough to talk with (-1: nobody)
+	var near_save = false         # standing on a Capsule Corp save point
 	var party = {}                # player id -> name: your party (shares exp and kills across the world)
 	var invites = []              # asked by others: [kind, player id, name, ticks left]
 	var duel = {}                 # a friendly duel: {with, name, t (countdown), over}
@@ -810,6 +811,7 @@ func _step_local(L: Local) -> void:
 		_menu_open(L)
 		inp = {}
 	inp = _talk_step(L, raw, inp, elist)
+	inp = _save_step(L, raw, inp, elist)
 	L.mprev = raw.duplicate()
 	f.step(inp, elist)
 	_bump(L)
@@ -948,6 +950,36 @@ func _talk_step(L: Local, raw: Dictionary, inp: Dictionary, elist: Array) -> Dic
 		_talked(L, str(people[L.near_npc]["name"]))
 	Sfx.play("move", 0.8)
 	L.talk_hold = true
+	inp = inp.duplicate()
+	inp["a"] = false
+	return inp
+
+## a Capsule Corp save point: stand on the pad and press A - the game is saved and your health and ki fill up
+## (Android port; the pads were only scenery before)
+func _save_step(L: Local, raw: Dictionary, inp: Dictionary, elist: Array) -> Dictionary:
+	var f: FighterSim = L.fighter
+	var saves: Array = L.area.get("saves", [])
+	var near = false
+	if not saves.is_empty() and f.state != "down" and L.menu.is_empty() and L.fade_dir == 0 and L.ev.is_empty():
+		for p in saves:
+			if (p as Vector2).distance_to(Vector2(f.x, f.y)) < 26.0:
+				near = true
+				break
+	if near and not L.near_save:
+		toasts.append(["CAPSULE CORP SAVE POINT - A: SAVE AND HEAL", Color(0.6, 0.85, 1), 150])
+	L.near_save = near
+	if not near or not inp.get("a", false) or not _pressed(L, raw, "a"):
+		return inp
+	for e in elist:
+		if e["alive"] and Vector2(e["x"] - f.x, e["y"] - f.y).length() < 44.0:
+			return inp      # a foe right here: A punches
+	f.hp = f.maxhp
+	f.ep = f.maxep
+	save_all()
+	print("[world] game saved at a save point: ", L.name, " hp ", f.hp, "/", f.maxhp, " ki ", f.ep, "/", f.maxep)
+	toasts.append(["%s: GAME SAVED - HEALTH AND KI RESTORED" % L.name, Color(0.6, 1, 0.7), 180])
+	Sfx.play("levelup", 0.6)
+	L.talk_hold = true          # (A held on must not punch)
 	inp = inp.duplicate()
 	inp["a"] = false
 	return inp

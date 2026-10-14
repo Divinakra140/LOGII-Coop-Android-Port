@@ -5,7 +5,7 @@
 B="$(cd "$(dirname "$0")/.." && pwd)"
 GODOT=${GODOT:-godot}
 ANDROID_SDK=${ANDROID_SDK:-$HOME/Library/Android/sdk}
-SDKBT="$ANDROID_SDK/build-tools/34.0.0"
+SDKBT="$ANDROID_SDK/build-tools/36.1.0"
 [ -n "$JAVA_HOME" ] && export PATH="$JAVA_HOME/bin:$PATH"
 cd "$B/project" || exit 1
 find . -name '._*' -delete

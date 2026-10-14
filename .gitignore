@@ -37,3 +37,13 @@ project/android/
 
 # this machine's tool paths
 tools/local.env
+
+# --- GLOBAL MULTIPLAYER: the live lobby list stays private ---
+lobby/wrangler.private.toml
+lobby/.cloudflare_token
+lobby/.wrangler/
+lobby/node_modules/
+project/lobby_server.txt
+
+# ZeroTier library binary (built from libzt; see README)
+android_custom/*.aar

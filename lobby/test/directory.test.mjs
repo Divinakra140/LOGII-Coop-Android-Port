@@ -1,0 +1,47 @@
+import assert from "node:assert/strict";
+import { Directory, TTL_MS, MAX_PER_ADDRESS } from "../src/directory.js";
+let clock = 1000;
+const d = new Directory(() => clock);
+const key = (n) => String(n).padStart(32, "0");
+const post = (n, extra = {}, client = "1.1.1.1") => d.handle("POST", "/v1/lobbies",
+    JSON.stringify({ key: key(n), address: "fce3:d51b:d59d:9e6a:6790::1", name: "World " + n, host: "RED", players: 1, max: 4, ...extra }), client);
+const list = async () => (await d.handle("GET", "/v1/lobbies", "", "")).body.lobbies;
+
+assert.equal((await post(1)).status, 200);
+let all = await list();
+assert.equal(all.length, 1);
+assert.equal(all[0].name, "World 1");
+assert.ok(!("key" in all[0]) && !("client" in all[0]) && !("seen" in all[0]), "secrets stay private");
+assert.equal((await post(1, { players: 3 })).status, 200);
+assert.equal((await list())[0].players, 3, "re-announce updates in place");
+assert.equal((await post(2, { players: 9, private: true, name: "x".repeat(99) })).status, 200);
+all = await list();
+assert.equal(all[1].players, 4); assert.equal(all[1].private, true); assert.equal(all[1].name.length, 24);
+assert.equal((await d.handle("DELETE", "/v1/lobbies", JSON.stringify({ key: key(9) }), "")).status, 200);
+assert.equal((await list()).length, 2, "a wrong key removes nothing");
+assert.equal((await d.handle("DELETE", "/v1/lobbies", JSON.stringify({ key: key(2) }), "")).status, 200);
+assert.equal((await list()).length, 1);
+assert.equal((await post(1, { remove: true })).status, 200);
+assert.equal((await list()).length, 0, "a host can remove its lobby with POST");
+assert.equal((await post(1)).status, 200);
+assert.equal((await post(3, { address: "not an address!" })).status, 400);
+assert.equal((await d.handle("POST", "/v1/lobbies", "{", "")).status, 400);
+assert.equal((await d.handle("POST", "/v1/lobbies", JSON.stringify({ key: "short" }), "")).status, 400);
+for (let n = 10; n < 10 + MAX_PER_ADDRESS; n++) await post(n, {}, "2.2.2.2");
+assert.equal((await post(99, {}, "2.2.2.2")).status, 429, "one address cannot flood the list");
+// What the worker stores must be enough to rebuild the list after a restart.
+const stored = new Map();
+const d2 = new Directory(() => clock);
+const apply = (r) => { if (r.saved) stored.set(r.saved.id, r.saved); for (const id of r.removed) stored.delete(id); };
+const post2 = (n) => d2.handle("POST", "/v1/lobbies", JSON.stringify({ key: key(n), address: "fce4::1", name: "Kept " + n }), "3.3.3.3");
+apply(await post2(1)); apply(await post2(2));
+apply(await d2.handle("DELETE", "/v1/lobbies", JSON.stringify({ key: key(2) }), ""));
+const restarted = new Directory(() => clock);
+for (const [id, lobby] of stored) restarted.lobbies.set(id, lobby);
+const kept = (await restarted.handle("GET", "/v1/lobbies", "", "")).body.lobbies;
+assert.deepEqual(kept.map((l) => l.name), ["Kept 1"], "the list survives a restart");
+clock += TTL_MS + 1;
+const expiry = await restarted.handle("GET", "/v1/lobbies", "", "");
+assert.equal(expiry.body.lobbies.length, 0); assert.equal(expiry.removed.length, 1, "expired lobbies are cleared from storage");
+assert.equal((await list()).length, 0, "silent lobbies expire");
+console.log("directory tests passed");

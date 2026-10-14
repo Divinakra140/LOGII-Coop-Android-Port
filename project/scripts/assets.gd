@@ -111,7 +111,7 @@ func find_import_dir() -> String:
 		return d
 	return ""
 
-const IMPORT_VERSION = 21    # 21 invisible walls opened everywhere: lone walls with nothing on them that stands out from the ground (Android port), 20 flowers and the like on the new land are walked over (Android port), 19 no doors into story scenes' backdrops (they showed as a jumble of tiles), 18 the sea is the game's own water, 2 kit and lands, 3 songs, 4 foes' attacks, 5 grown land, 6 heroes' effects + one world per land, 7 people, 8 smoother grown land, 9 recorded songs mended, 10 ledges opened (the lands join up), calmer city edges, 11 the heroes' own attacks, 12 the foes' own behaviour scripts + attack animations, 13 EARTH: the whole planet as one map, 14 every place on it (doors without loading), 15 collision mended (no invisible walls, nothing walked through), 16 the country between places built the way the game builds its maps, 17 the game's own collision kept
+const IMPORT_VERSION = 22    # 22 grass tufts and clumps of them walked over (Android port), 21 invisible walls opened everywhere: lone walls with nothing on them that stands out from the ground (Android port), 20 flowers and the like on the new land are walked over (Android port), 19 no doors into story scenes' backdrops (they showed as a jumble of tiles), 18 the sea is the game's own water, 2 kit and lands, 3 songs, 4 foes' attacks, 5 grown land, 6 heroes' effects + one world per land, 7 people, 8 smoother grown land, 9 recorded songs mended, 10 ledges opened (the lands join up), calmer city edges, 11 the heroes' own attacks, 12 the foes' own behaviour scripts + attack animations, 13 EARTH: the whole planet as one map, 14 every place on it (doors without loading), 15 collision mended (no invisible walls, nothing walked through), 16 the country between places built the way the game builds its maps, 17 the game's own collision kept
 func ready_to_play() -> bool:
 	return base_dir != "" and import_version() >= IMPORT_VERSION
 
@@ -1017,7 +1017,22 @@ func _land_area(key: String) -> Dictionary:
 			ppl.append(q)
 	a["land"]["parts"] = parts2
 	a["people"] = ppl
+	a["saves"] = save_points(cells, tw)
 	return a
+
+## the Capsule Corp save points: the round pad with the C. Its middle tile (the game's own, always the same one)
+## marks the spot; any layer, mirrored or not (Android port)
+const SAVE_PAD_TILE = 7263
+func save_points(cells: Array, tw: int) -> Array:
+	var out = []
+	for c in cells:
+		var layer: PackedInt32Array = c
+		for v in [SAVE_PAD_TILE, SAVE_PAD_TILE | (1 << 16), SAVE_PAD_TILE | (2 << 16), SAVE_PAD_TILE | (3 << 16)]:
+			var i = layer.find(v)
+			while i >= 0:
+				out.append(Vector2((i % tw) * 8, (i / tw) * 8))
+				i = layer.find(v, i + 1)
+	return out
 
 ## the collision value under a point: 0 wall, 1 ground, 2 raised ground (bridges, cliff tops), 3 both (where you step up)
 func walk_at(a: Dictionary, x: float, y: float) -> int:

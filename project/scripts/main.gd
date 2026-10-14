@@ -55,6 +55,14 @@ func _ready() -> void:
 			_start_test()
 		else:
 			_menu()
+			if test.has("lmp"):
+				_local_multiplayer()
+			elif test.has("gmp"):
+				_global_multiplayer()
+			elif test.has("find"):
+				_find_games()
+			if test.has("find"):
+				_find_games()
 
 func _on_permission(permission: String, granted: bool) -> void:
 	if permission == Assets.ANDROID_AUDIO and granted:
@@ -210,6 +218,7 @@ func _process(_dt: float) -> void:
 
 # ------------------------------------------------------------------ the menu
 func _menu() -> void:
+	_global_back = Callable()
 	_clear()
 	Music.play("title")
 	Music.prepare(["field", "cave", "lair", "boss", "victory"])
@@ -257,10 +266,17 @@ func _menu() -> void:
 	for t in ["EASY", "NORMAL", "HARD"]:
 		diff_pick.add_item(t)
 	diff_pick.select(1)
+	diff_pick.custom_minimum_size.x = DIFF_W
 	diff_pick.add_theme_font_size_override("font_size", 8)
 	h.add_child(diff_pick)
+	var mid = HBoxContainer.new()       # (name + seed, players) | PLAY
+	v.add_child(mid)
+	var left = VBoxContainer.new()
+	left.add_theme_constant_override("separation", 2)
+	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mid.add_child(left)
 	var h2 = HBoxContainer.new()
-	v.add_child(h2)
+	left.add_child(h2)
 	name_edit = LineEdit.new()
 	name_edit.text = str(Game.cfg["name"])
 	name_edit.placeholder_text = "your name"
@@ -272,20 +288,21 @@ func _menu() -> void:
 	seed_edit.custom_minimum_size = Vector2(70, 0)
 	seed_edit.add_theme_font_size_override("font_size", 8)
 	h2.add_child(seed_edit)
-	ip_edit = LineEdit.new()
-	ip_edit.placeholder_text = "host's IP (Hamachi)"
-	ip_edit.text = str(Game.cfg["ip"])
-	ip_edit.custom_minimum_size = Vector2(110, 0)
-	ip_edit.add_theme_font_size_override("font_size", 8)
-	h2.add_child(ip_edit)
+	seed_edit.placeholder_text = "planet seed"
+	seed_edit.tooltip_text = "RANDOM PLANET: the same number always makes the same planet"
 	# split screen: a second player on this PC (works online too: 2 here + your friend's PC)
 	var h4 = HBoxContainer.new()
-	v.add_child(h4)
+	left.add_child(h4)
+	var play_place = CenterContainer.new()      # (PLAY in the middle of the room under NORMAL)
+	mid.add_child(play_place)
+	play_place.add_child(_play_button())
+	play_place.custom_minimum_size.x = DIFF_W        # (the NORMAL box's width: PLAY is centred under it)
 	locals_pick = OptionButton.new()
 	var here = "" if OS.has_feature("mobile") else " ON THIS PC"      # (a handheld: no "PC")
 	locals_pick.add_item("1 PLAYER" + here, 0)
 	locals_pick.add_item("2 PLAYERS" + here + " (SPLIT SCREEN)", 1)
 	locals_pick.select(clampi(int(Game.cfg.get("local_players", 1)) - 1, 0, 1))
+	locals_pick.fit_to_longest_item = false      # (only as wide as what it shows)
 	locals_pick.add_theme_font_size_override("font_size", 8)
 	h4.add_child(locals_pick)
 	p2_row = HBoxContainer.new()
@@ -304,11 +321,9 @@ func _menu() -> void:
 	p2_row.visible = locals_pick.selected == 1
 	locals_pick.item_selected.connect(func(i): p2_row.visible = i == 1)
 	var h3 = HBoxContainer.new()
-	v.add_child(h3)
-	_button(h3, "PLAY" if OS.has_feature("mobile") else "PLAY ON THIS PC", _solo)
-	_button(h3, "HOST ONLINE", _host)
-	_button(h3, "JOIN", _join)
-	_button(h3, "WORLD SERVER", _server_from_menu)
+	left.add_child(h3)
+	_button(h3, "LOCAL MULTIPLAYER", _local_multiplayer)
+	_button(h3, "GLOBAL MULTIPLAYER", _global_multiplayer)
 	_button(h3, "DEV TOOLS", _dev_tools)
 	_button(h3, "MODS (%d ON)" % Mods.enabled_names().size(), _mods_screen)
 	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
@@ -323,18 +338,19 @@ func _menu() -> void:
 		if not ips.is_empty():
 			_label(v, "PHONE / TABLET: this PC's address is %s - type it on the phone (to get the game files, and to JOIN)." % ", ".join(PackedStringArray(ips)), 7, Color(0.7, 0.85, 1))
 	if OS.has_feature("mobile"):
-		_label(v, "CONTROLS: d-pad / stick move.  A punch (hold: rushing strike).  B ki blast (hold: your beam).  X special.  Y transform.  L1 item.  R1 next special.  R2 or L3 run.  START menu.  SELECT map.  MENUS: d-pad + A, or tap.\nONLINE: the host presses HOST ONLINE and gives their IP address (port 7777) - on the same Wi-Fi, or over the internet with Tailscale or ZeroTier. The friend types it in the address box and presses JOIN.", 7, Color(0.75, 0.75, 0.8))
+		_label(v, "CONTROLS: d-pad / stick move.  A punch (hold: rushing strike).  B ki blast (hold: your beam).  X special.  Y transform.  L1 item.  R1 next special.  R2 or L3 run.  START menu.  SELECT map.  MENUS: d-pad + A, or tap.\nLOCAL MULTIPLAYER: play with people on the same Wi-Fi.  GLOBAL MULTIPLAYER: play with anyone over the internet - public games, or private ones with a password.", 7, Color(0.75, 0.75, 0.8))
 	else:
-		_label(v, "ONE PLAYER: arrows / WASD / pad.  A = Z or J (punch, hold: rushing strike).  B = X or K (ki blast, hold: your beam).  ESC / START: pause.\nTWO ON THIS PC: P1 = WASD + J / K, P2 = arrows + . / (or numpad 1 / 2). With pads: one pad - P1 keyboard, P2 pad; two pads - one each. F2 in the game: player 2 joins / leaves.\nHAMACHI: the host gives their Hamachi IP (port 7777); the friend types it and presses JOIN. Split screen and online mix: up to 2 on each PC.", 7, Color(0.75, 0.75, 0.8))
+		_label(v, "ONE PLAYER: arrows / WASD / pad.  A = Z or J (punch, hold: rushing strike).  B = X or K (ki blast, hold: your beam).  ESC / START: pause.\nTWO ON THIS PC: P1 = WASD + J / K, P2 = arrows + . / (or numpad 1 / 2). With pads: one pad - P1 keyboard, P2 pad; two pads - one each. F2 in the game: player 2 joins / leaves.\nLOCAL MULTIPLAYER: play together with people on the same network - host a game, join one, or host a server. Split screen and multiplayer mix: up to 2 on each PC.", 7, Color(0.75, 0.75, 0.8))
 
 func _read() -> void:
+	if char_pick == null or not is_instance_valid(char_pick):
+		return      # (the menu is gone: what was read when you left it stays)
 	Game.cfg["character"] = char_pick.get_selected_id()
 	var aid = adv_pick.get_selected_id()
 	Game.cfg["adventure"] = ["gatorra", "dunara", "random"][aid] if aid < 3 else "land:%d" % int(LANDS[aid - 3][0])
 	Game.cfg["difficulty"] = diff_pick.selected
 	Game.cfg["seed"] = int(seed_edit.text) if seed_edit.text.is_valid_int() else 12345
 	Game.cfg["name"] = name_edit.text.strip_edges().to_upper().left(10) if name_edit.text.strip_edges() != "" else "PLAYER"
-	Game.cfg["ip"] = ip_edit.text.strip_edges()
 	Game.cfg["local_players"] = locals_pick.selected + 1
 	Game.cfg["character2"] = char2_pick.get_selected_id()
 	Game.cfg["name2"] = name2_edit.text.strip_edges().to_upper().left(10) if name2_edit.text.strip_edges() != "" else "PLAYER 2"
@@ -490,6 +506,449 @@ func _join() -> void:
 	else:
 		lobby_label.text = Game.net_error
 
+# ------------------------------------------------------------------ LOCAL MULTIPLAYER (Android port): host, join or serve
+## on the same Wi-Fi; the addresses are found and used behind the scenes - nobody types one
+var in_local_mp = false
+func _local_multiplayer() -> void:
+	_read()
+	in_local_mp = true
+	_clear()
+	var v = _box()
+	v.add_theme_constant_override("separation", 4)
+	# top left: a small BACK, then the title
+	var top = HBoxContainer.new()
+	top.add_theme_constant_override("separation", 8)
+	v.add_child(top)
+	_button(top, "BACK", func(): in_local_mp = false; _menu())
+	var t = _label(top, "LOCAL MULTIPLAYER", 12, Color(1, 0.85, 0.3))
+	t.custom_minimum_size = Vector2(0, 0)
+	t.autowrap_mode = TextServer.AUTOWRAP_OFF
+	# a server with no player of its own
+	var gap_top = Control.new()
+	gap_top.custom_minimum_size = Vector2(0, 6)
+	v.add_child(gap_top)
+	var srv = _button(v, "HOST SERVER WITHOUT PLAYING", func(): in_local_mp = false; _server_from_menu())
+	srv.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	srv.add_theme_font_size_override("font_size", 11)
+	srv.custom_minimum_size = Vector2(0, 24)
+	_green(srv)
+	var sd = _label(v, "Allows a device on your local Wi-Fi network to become a server that other devices can join without that device having to run the game.", 8, Color(0.8, 0.85, 0.95))
+	sd.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	# a lot of room, then HOST GAME and JOIN GAME down below: the screen is filled
+	var gap = Control.new()
+	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	gap.size_flags_stretch_ratio = 2.0
+	v.add_child(gap)
+	# HOST GAME and JOIN GAME side by side, big, each with its paragraph
+	var cols = HBoxContainer.new()
+	cols.add_theme_constant_override("separation", 16)
+	v.add_child(cols)
+	for c in [["HOST GAME", _host, "Host a local game on your Wi-Fi network. Only people on your Wi-Fi network can join this game."],
+			["JOIN GAME", func(): in_local_mp = false; _find_games(), "Join a game on your local Wi-Fi network. You won't be able to see games hosted by anyone else on any other Wi-Fi network other than yours."]]:
+		var col = VBoxContainer.new()
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.add_theme_constant_override("separation", 4)
+		cols.add_child(col)
+		var b = Button.new()
+		b.text = c[0]
+		b.add_theme_font_size_override("font_size", 14)
+		b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		b.custom_minimum_size = Vector2(0, 30)
+		_green(b)
+		b.pressed.connect(c[1])
+		col.add_child(b)
+		var d = _label(col, c[2], 8, Color(0.8, 0.85, 0.95))
+		d.custom_minimum_size = Vector2(0, 0)
+		d.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	lobby_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var gap_bottom = Control.new()
+	gap_bottom.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(gap_bottom)
+
+## the green of the PLAY button (Steam's), for the big buttons
+func _green(b: Button) -> void:
+	for st in [["normal", Color(0.44, 0.69, 0.13), Color(0.36, 0.56, 0.1)], ["hover", Color(0.55, 0.8, 0.18), Color(0.44, 0.69, 0.13)],
+			["pressed", Color(0.33, 0.52, 0.09), Color(0.27, 0.43, 0.07)], ["focus", Color(0.55, 0.8, 0.18), Color(0.85, 1, 0.55)]]:
+		var sb = StyleBoxFlat.new()
+		sb.bg_color = st[1]
+		sb.border_color = st[2]
+		sb.set_border_width_all(1 if st[0] != "focus" else 2)
+		sb.set_corner_radius_all(3)
+		sb.content_margin_left = 12
+		sb.content_margin_right = 12
+		b.add_theme_stylebox_override(st[0], sb)
+	for k in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
+		b.add_theme_color_override(k, Color(1, 1, 1))
+
+## PLAY: big and green (the colour of Steam's play button) with a triangle - the first thing to press (Android port)
+const DIFF_W = 110      # the NORMAL box, and the room under it where PLAY stands
+func _play_button() -> Button:
+	var b = Button.new()
+	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_green(b)
+	# [space][triangle][space][PLAY][space]: the same room everywhere
+	const GAP = 9
+	var row = HBoxContainer.new()
+	row.add_theme_constant_override("separation", GAP)
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(row)
+	var tex = _triangle_icon()
+	var tri = TextureRect.new()
+	tri.texture = tex
+	tri.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	tri.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(tri)
+	var lab = Label.new()
+	lab.text = "PLAY"
+	lab.add_theme_font_size_override("font_size", 14)
+	lab.add_theme_color_override("font_color", Color(1, 1, 1))
+	lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(lab)
+	var word_w = ThemeDB.fallback_font.get_string_size("PLAY", HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+	b.custom_minimum_size = Vector2(GAP * 3 + tex.get_width() + word_w, 32)
+	b.pressed.connect(_solo)
+	b.add_to_group("first_focus")
+	return b
+
+func _triangle_icon() -> ImageTexture:
+	var img = Image.create(10, 12, false, Image.FORMAT_RGBA8)
+	for y in 12:
+		var reach = 6.0 - absf(y - 5.5)          # a play triangle pointing right
+		for x in 10:
+			if x + 0.5 <= reach * 10.0 / 6.0:
+				img.set_pixel(x, y, Color(1, 1, 1))
+	return ImageTexture.create_from_image(img)
+
+func _big_button(parent: Node, t: String, f: Callable) -> Button:
+	var b = _button(parent, t, f)
+	b.add_theme_font_size_override("font_size", 11)
+	b.custom_minimum_size = Vector2(0, 22)
+	return b
+
+# ------------------------------------------------------------------ GLOBAL MULTIPLAYER (Android port): over the internet
+## (embedded ZeroTier + the lobby list: see online.gd). B goes back from every one of these screens.
+var _global_back: Callable = Callable()
+var _online_label: Label
+func _global_multiplayer() -> void:
+	_read()
+	Online.start()
+	Online.browse(false)
+	_global_back = func(): _menu()
+	_clear()
+	var v = _box()
+	v.add_theme_constant_override("separation", 4)
+	var top = _top_bar(v, "GLOBAL MULTIPLAYER")
+	_online_label = _label(top, "", 8, Color(0.7, 0.9, 1))
+	_online_label.custom_minimum_size = Vector2(0, 0)
+	_online_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	var gap_top = Control.new()
+	gap_top.custom_minimum_size = Vector2(0, 4)
+	v.add_child(gap_top)
+	var srv = _button(v, "HOST SERVER WITHOUT PLAYING", func(): _world_name_screen(func(): _online_action(func(): _global_back = Callable(); test["online"] = "1"; _server_from_menu())))
+	srv.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	srv.add_theme_font_size_override("font_size", 11)
+	srv.custom_minimum_size = Vector2(0, 24)
+	_green(srv)
+	var sd = _label(v, "Turns this device into an online server that anyone in the world can find and join, without this device playing.", 8, Color(0.8, 0.85, 0.95))
+	sd.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var gap = Control.new()
+	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	gap.size_flags_stretch_ratio = 2.0
+	v.add_child(gap)
+	_columns(v, [["HOST PUBLIC GAME", func(): _world_name_screen(func(): _online_action(func(): _host_online(""))), "Host a game anyone in the world can see under JOIN GAME and join."],
+		["HOST PRIVATE GAME", func(): _private_password_screen(), "Host a game protected by a password you choose. Only people with the password can join."],
+		["JOIN GAME", func(): _online_games(), "See the games people are playing online and join one. Private games ask for their password."]])
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	lobby_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var gap_bottom = Control.new()
+	gap_bottom.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(gap_bottom)
+	_tick(_show_online_state)
+
+## a small BACK at the top left and the title; returns the row (more can be added to it)
+func _top_bar(v: Control, title_text: String) -> HBoxContainer:
+	var top = HBoxContainer.new()
+	top.add_theme_constant_override("separation", 8)
+	v.add_child(top)
+	_button(top, "BACK", func(): if _global_back.is_valid(): _global_back.call())
+	var title = _label(top, title_text, 12, Color(1, 0.85, 0.3))
+	title.custom_minimum_size = Vector2(0, 0)
+	title.autowrap_mode = TextServer.AUTOWRAP_OFF
+	return top
+
+## big green buttons side by side, each with its paragraph under it
+func _columns(v: Control, items: Array) -> void:
+	var cols = HBoxContainer.new()
+	cols.add_theme_constant_override("separation", 12)
+	v.add_child(cols)
+	for c in items:
+		var col = VBoxContainer.new()
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.add_theme_constant_override("separation", 4)
+		cols.add_child(col)
+		var b = Button.new()
+		b.text = c[0]
+		b.add_theme_font_size_override("font_size", 12 if items.size() > 2 else 14)
+		b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		b.custom_minimum_size = Vector2(0, 28)
+		_green(b)
+		b.pressed.connect(c[1])
+		col.add_child(b)
+		var d = _label(col, c[2], 8, Color(0.8, 0.85, 0.95))
+		d.custom_minimum_size = Vector2(0, 0)
+		d.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+## run f every half second while this screen is up
+func _tick(f: Callable) -> void:
+	var t = Timer.new()
+	t.wait_time = 0.5
+	t.autostart = true
+	t.timeout.connect(f)
+	ui.add_child(t)
+	f.call()
+
+func _show_online_state() -> void:
+	if is_instance_valid(_online_label):
+		_online_label.text = "   " + Online.status_text()
+
+## hosting and joining need the internet network up; until then the button says so
+func _online_action(f: Callable) -> void:
+	if not Online.available():
+		lobby_label.text = "GLOBAL MULTIPLAYER needs the Android app."
+		return
+	if not Online.is_online():
+		lobby_label.text = Online.status_text() + " - try again in a moment."
+		return
+	f.call()
+
+func _host_online(password: String) -> void:
+	Game.cfg["mode"] = "host"
+	if Game.host_game_online(password):
+		_global_back = Callable()
+		Game.begin()
+	elif is_instance_valid(lobby_label):
+		lobby_label.text = Game.net_error
+
+## WORLD NAME: what people see in JOIN GAME (a lot of worlds are GOKU - EARTH)
+func _world_name_screen(then: Callable) -> void:
+	_global_back = func(): _global_multiplayer()
+	_clear()
+	var v = _box()
+	v.add_theme_constant_override("separation", 6)
+	_top_bar(v, "WORLD NAME")
+	_label(v, "Give your world a name. It is what other players see in JOIN GAME.", 8, Color(0.8, 0.85, 0.95))
+	_password_box(v)
+	_pw_edit.placeholder_text = "world name"
+	_pw_edit.text = Online.world_name
+	var go = _button(v, "CONTINUE", func():
+		var n = _pw_edit.text.strip_edges().to_upper()
+		if n.length() < 2:
+			lobby_label.text = "The name needs 2 or more characters."
+			return
+		Online.world_name = n.left(24)
+		then.call())
+	go.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	go.add_theme_font_size_override("font_size", 12)
+	go.custom_minimum_size = Vector2(90, 26)
+	_green(go)
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	lobby_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+var _pw_edit: LineEdit
+func _password_box(v: Control) -> void:
+	_pw_edit = LineEdit.new()
+	_pw_edit.placeholder_text = "password"
+	_pw_edit.max_length = 24
+	_pw_edit.custom_minimum_size = Vector2(160, 0)
+	_pw_edit.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_pw_edit.add_theme_font_size_override("font_size", 10)
+	v.add_child(_pw_edit)
+
+func _private_password_screen() -> void:
+	_global_back = func(): _global_multiplayer()
+	_clear()
+	var v = _box()
+	v.add_theme_constant_override("separation", 6)
+	_top_bar(v, "HOST PRIVATE GAME")
+	_label(v, "Choose a password for your game (4 or more characters). Tell it to the people you want to play with - they type it when they join.", 8, Color(0.8, 0.85, 0.95))
+	_password_box(v)
+	var go = _button(v, "START PRIVATE GAME", _start_private)
+	go.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	go.add_theme_font_size_override("font_size", 12)
+	go.custom_minimum_size = Vector2(0, 26)
+	_green(go)
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	lobby_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+func _start_private() -> void:
+	var pw = _pw_edit.text.strip_edges()
+	if pw.length() < 4:
+		lobby_label.text = "The password needs 4 or more characters."
+		return
+	_online_action(func(): _host_online(pw))
+
+var _online_list: VBoxContainer
+var _online_sig = "-"
+func _online_games() -> void:
+	_global_back = func(): Online.browse(false); _global_multiplayer()
+	Online.start()
+	Online.browse(true)
+	_online_sig = "-"
+	_clear()
+	var v = _box()
+	var top = _top_bar(v, "JOIN GAME")
+	_online_label = _label(top, "", 8, Color(0.7, 0.9, 1))
+	_online_label.custom_minimum_size = Vector2(0, 0)
+	_online_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_label(v, "Games people are playing online. Pick one to join.", 8)
+	_online_list = VBoxContainer.new()
+	v.add_child(_online_list)
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	_tick(_refresh_online_games)
+
+func _refresh_online_games() -> void:
+	_show_online_state()
+	if not is_instance_valid(_online_list):
+		return
+	var sig = Online.list_error
+	for g in Online.lobbies:
+		sig += "%s|%s|%s|%d|%s;" % [g["id"], g["character"], g["planet"], g["players"], g["private"]]
+	if sig == _online_sig:
+		return
+	_online_sig = sig
+	print("[main] online games: ", sig)
+	var fo = get_viewport().gui_get_focus_owner()
+	var had_focus = fo != null and _online_list.is_ancestor_of(fo)
+	for c in _online_list.get_children():
+		c.queue_free()
+	if Online.list_error != "":
+		_label(_online_list, Online.list_error, 8, Color(1, 0.6, 0.5))
+		return
+	if Online.lobbies.is_empty():
+		_label(_online_list, "Looking for games... (nobody is hosting one online right now)", 8, Color(0.75, 0.75, 0.8))
+		return
+	var first: Button = null
+	for g in Online.lobbies:
+		var t = "%s  -  %s  -  %s   (%d/%d)%s" % [g.get("world", ""), g["character"], g["planet"], int(g["players"]), int(g["max"]), "   PRIVATE" if g["private"] else ""]
+		var b = _big_button(_online_list, t, _pick_online_game.bind(g))
+		b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		_green(b)
+		if first == null:
+			first = b
+	if had_focus and first:
+		first.grab_focus.call_deferred()
+
+func _pick_online_game(g: Dictionary) -> void:
+	if bool(g["private"]):
+		_join_password_screen(g)
+	else:
+		_online_action(func(): _join_online(g, ""))
+
+func _join_password_screen(g: Dictionary) -> void:
+	_global_back = func(): _online_games()
+	Online.browse(false)
+	_clear()
+	var v = _box()
+	v.add_theme_constant_override("separation", 6)
+	_top_bar(v, "PRIVATE GAME")
+	_label(v, "%s  -  %s   is a private game. Type its password:" % [g["character"], g["planet"]], 9, Color(0.85, 0.9, 1))
+	_password_box(v)
+	var go = _button(v, "JOIN", func(): _online_action(func(): _join_online(g, _pw_edit.text.strip_edges())))
+	go.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	go.add_theme_font_size_override("font_size", 12)
+	go.custom_minimum_size = Vector2(80, 26)
+	_green(go)
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	lobby_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+func _join_online(g: Dictionary, password: String) -> void:
+	Online.browse(false)
+	Game.net_error = ""
+	Game.cfg["mode"] = "join"
+	var port = Online.join(g, password)
+	if Game.join_game_online(port):
+		lobby_label.text = "JOINING ..."
+	else:
+		lobby_label.text = Game.net_error
+
+# ------------------------------------------------------------------ JOIN GAME: the games on this Wi-Fi
+var finding = false
+var _find_list: VBoxContainer
+var _find_sig = ""
+func _find_games() -> void:
+	finding = true
+	_find_sig = "-"
+	_clear()
+	var v = _box()
+	var top = HBoxContainer.new()
+	top.add_theme_constant_override("separation", 8)
+	v.add_child(top)
+	_button(top, "BACK", _leave_find)
+	var title = _label(top, "JOIN GAME", 12, Color(1, 0.85, 0.3))
+	title.custom_minimum_size = Vector2(0, 0)
+	title.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_label(v, "Games on your Wi-Fi network. Pick one to join.", 8)
+	_find_list = VBoxContainer.new()
+	v.add_child(_find_list)
+	lobby_label = _label(v, "", 8, Color(0.7, 0.9, 1))
+	Game.lan_scan_start()
+	var t = Timer.new()
+	t.wait_time = 0.5
+	t.autostart = true
+	t.timeout.connect(_refresh_find)
+	ui.add_child(t)
+	_refresh_find()
+
+func _refresh_find() -> void:
+	if not finding or not is_instance_valid(_find_list):
+		return
+	var ips = Game.lan_found.keys()
+	ips.sort()
+	var sig = ""
+	for ip in ips:
+		var g: Dictionary = Game.lan_found[ip]
+		sig += "%s|%s|%s;" % [ip, g.get("character", ""), g.get("planet", "")]
+	if sig == _find_sig:
+		return
+	_find_sig = sig
+	print("[main] games on this Wi-Fi: ", sig)
+	var had_focus = get_viewport().gui_get_focus_owner() != null and _find_list.is_ancestor_of(get_viewport().gui_get_focus_owner())
+	for c in _find_list.get_children():
+		c.queue_free()
+	if ips.is_empty():
+		_label(_find_list, "Looking for games... (someone on your Wi-Fi has to choose HOST GAME or HOST SERVER WITHOUT PLAYING)", 8, Color(0.75, 0.75, 0.8))
+		return
+	var first: Button = null
+	for ip in ips:
+		var g: Dictionary = Game.lan_found[ip]
+		var b = _big_button(_find_list, "%s  -  %s" % [str(g.get("character", g.get("name", "?"))), str(g.get("planet", ""))], _join_found.bind(ip))
+		b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		_green(b)
+		if first == null:
+			first = b
+	if had_focus and first:
+		first.grab_focus.call_deferred()
+
+func _join_found(ip: String) -> void:
+	Game.lan_scan_stop()
+	finding = false
+	Game.cfg["ip"] = ip
+	Game.cfg["mode"] = "join"
+	if Game.join_game(ip):
+		lobby_label.text = "JOINING ..."
+	else:
+		lobby_label.text = Game.net_error
+
+func _leave_find() -> void:
+	Game.lan_scan_stop()
+	finding = false
+	_local_multiplayer()
+
 func _refresh_lobby() -> void:
 	if lobby_label == null or not is_instance_valid(lobby_label):
 		return
@@ -500,11 +959,16 @@ func _refresh_lobby() -> void:
 	for id in Game.peers:
 		names.append("%s (%s)" % [Game.peers[id]["name"], Assets.CHARACTERS[clampi(int(Game.peers[id]["character"]), 0, Assets.CHARACTERS.size() - 1)]])
 	if Game.cfg["mode"] == "host":
-		lobby_label.text = "HOSTING (port 7777). In the game: " + ", ".join(PackedStringArray(names))
+		lobby_label.text = "HOSTING - people on your Wi-Fi can join. In the game: " + ", ".join(PackedStringArray(names))
 	else:
 		lobby_label.text = "CONNECTED. Waiting for the host to start... Players: " + ", ".join(PackedStringArray(names))
 
 func _on_started() -> void:
+	_global_back = Callable()
+	Online.browse(false)
+	in_local_mp = false
+	finding = false
+	Game.lan_scan_stop()
 	if Game.cfg["mode"] == "server":
 		return
 	if world and is_instance_valid(world) and world.has_method("save_all"):
@@ -533,7 +997,7 @@ func _start_server() -> void:
 	Game.cfg["adventure"] = test.get("adv", "gatorra")
 	Game.cfg["seed"] = int(test.get("seed", "12345"))
 	Game.cfg["difficulty"] = int(test.get("difficulty", "1"))
-	if not Game.host_game():
+	if not (Game.host_game_online("") if test.has("online") else Game.host_game()):
 		print("[server] ", Game.net_error)
 		get_tree().quit(1)
 		return
@@ -546,6 +1010,7 @@ func _start_server() -> void:
 		_clear()
 		var v = _box()
 		_label(v, "LOG2 WORLD SERVER", 12, Color(1, 0.85, 0.3))
+		_button(v, "STOP THE SERVER - BACK TO THE MENU", srv.stop)
 		srv.status = _label(v, "", 8, Color(0.8, 1, 0.8))
 
 # ------------------------------------------------------------------ test aid (headless runs)
@@ -566,6 +1031,17 @@ func _start_test() -> void:
 		Game.host_game()
 		await get_tree().create_timer(float(test.get("wait", "3"))).timeout
 		Game.begin()
+	elif Game.cfg["mode"] == "wshost":       # test: GLOBAL hosting without ZeroTier (WebSocket on this machine)
+		Game.cfg["mode"] = "host"
+		Game.host_game_online(test.get("pw", ""))
+		if test.has("salt"):        # (a test: a known salt, so the joining copy can make its proof)
+			Online.salt = test["salt"]
+			Online._proof = Online.proof_of(Online.salt, test.get("pw", ""))
+		Game.begin()
+	elif Game.cfg["mode"] == "wsjoin":
+		Game.cfg["mode"] = "join"
+		Online.join_proof = Online.proof_of(test.get("salt", ""), test.get("pw", "")) if test.has("salt") else ""
+		Game.join_game_online(Online.PORT)
 	elif Game.cfg["mode"] == "join":
 		Game.join_game(test.get("ip", "127.0.0.1"))
 	else:
@@ -577,11 +1053,28 @@ func _input(ev: InputEvent) -> void:
 		var full = DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if full else DisplayServer.WINDOW_MODE_FULLSCREEN)
 		get_viewport().set_input_as_handled()
+	# GLOBAL MULTIPLAYER screens: B (or ESC) goes back
+	if _global_back.is_valid() and ui != null and is_instance_valid(ui) and ((ev is InputEventJoypadButton and ev.pressed and ev.button_index == Game.pad_btn("b")) or (ev is InputEventKey and ev.pressed and not ev.echo and ev.keycode == KEY_ESCAPE)):
+		get_viewport().set_input_as_handled()
+		_global_back.call()
+		return
+	# LOCAL MULTIPLAYER / JOIN GAME: B (or ESC) goes back
+	if in_local_mp and ui != null and is_instance_valid(ui) and ((ev is InputEventJoypadButton and ev.pressed and ev.button_index == Game.pad_btn("b")) or (ev is InputEventKey and ev.pressed and not ev.echo and ev.keycode == KEY_ESCAPE)):
+		get_viewport().set_input_as_handled()
+		in_local_mp = false
+		_menu()
+		return
+	if finding and ui != null and is_instance_valid(ui) and ((ev is InputEventJoypadButton and ev.pressed and ev.button_index == Game.pad_btn("b")) or (ev is InputEventKey and ev.pressed and not ev.echo and ev.keycode == KEY_ESCAPE)):
+		get_viewport().set_input_as_handled()
+		_leave_find()
+		return
 	# a pad in the menus: the first press puts the focus on the first button (d-pad moves, A presses)
 	if ev is InputEventJoypadButton and ev.pressed and ui != null and is_instance_valid(ui) and ui.is_inside_tree():
 		var fo = get_viewport().gui_get_focus_owner()
 		if fo == null or not fo.is_visible_in_tree():
-			var first = _first_focusable(ui)
+			var first = get_tree().get_first_node_in_group("first_focus")      # (PLAY on the main menu)
+			if first == null or not is_instance_valid(first) or not first.is_visible_in_tree():
+				first = _first_focusable(ui)
 			if first:
 				first.grab_focus()
 				get_viewport().set_input_as_handled()

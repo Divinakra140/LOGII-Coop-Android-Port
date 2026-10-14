@@ -1,0 +1,12 @@
+# Public example. The live lobby list uses wrangler.private.toml (not in the repo).
+name = "log2-lobbies-example"
+main = "src/worker.js"
+compatibility_date = "2026-09-01"
+
+[[durable_objects.bindings]]
+name = "DIRECTORY"
+class_name = "LobbyDirectory"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LobbyDirectory"]
