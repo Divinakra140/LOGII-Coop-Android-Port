@@ -111,7 +111,7 @@ func find_import_dir() -> String:
 		return d
 	return ""
 
-const IMPORT_VERSION = 19    # 19 no doors into story scenes' backdrops (they showed as a jumble of tiles), 18 the sea is the game's own water, 2 kit and lands, 3 songs, 4 foes' attacks, 5 grown land, 6 heroes' effects + one world per land, 7 people, 8 smoother grown land, 9 recorded songs mended, 10 ledges opened (the lands join up), calmer city edges, 11 the heroes' own attacks, 12 the foes' own behaviour scripts + attack animations, 13 EARTH: the whole planet as one map, 14 every place on it (doors without loading), 15 collision mended (no invisible walls, nothing walked through), 16 the country between places built the way the game builds its maps, 17 the game's own collision kept
+const IMPORT_VERSION = 21    # 21 invisible walls opened everywhere: lone walls with nothing on them that stands out from the ground (Android port), 20 flowers and the like on the new land are walked over (Android port), 19 no doors into story scenes' backdrops (they showed as a jumble of tiles), 18 the sea is the game's own water, 2 kit and lands, 3 songs, 4 foes' attacks, 5 grown land, 6 heroes' effects + one world per land, 7 people, 8 smoother grown land, 9 recorded songs mended, 10 ledges opened (the lands join up), calmer city edges, 11 the heroes' own attacks, 12 the foes' own behaviour scripts + attack animations, 13 EARTH: the whole planet as one map, 14 every place on it (doors without loading), 15 collision mended (no invisible walls, nothing walked through), 16 the country between places built the way the game builds its maps, 17 the game's own collision kept
 func ready_to_play() -> bool:
 	return base_dir != "" and import_version() >= IMPORT_VERSION
 

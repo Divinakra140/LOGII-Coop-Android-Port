@@ -315,6 +315,43 @@ static std::vector<uint8_t> open_ledges(const std::vector<uint8_t>& w, int tw, i
     }
     return o;
 }
+
+// INVISIBLE WALLS (Android port): a lone patch of wall (1 or 2 cells, walkable ground all round it) with nothing
+// solid drawn on it - only ground, or a flower the game lets you walk over - is opened: what you see is what blocks.
+// Real obstacles are bigger, or show something (a planter, a trunk, a rock, a post) and keep blocking.
+// plain(i): nothing solid drawn on the cell; solid(i)/open(i): read and write the collision. Returns the cells opened.
+template <class Plain, class Solid, class Open>
+static int open_invisible_walls(int W, int H, Plain plain, Solid solid, Open open_cell) {
+    const size_t N = static_cast<size_t>(W) * H;
+    std::vector<uint8_t> seen(N, 0);
+    int opened = 0;
+    std::vector<size_t> comp, st;
+    for (size_t s0 = 0; s0 < N; ++s0) {
+        if (seen[s0] || !solid(s0)) continue;
+        comp.clear(); st.assign(1, s0); seen[s0] = 1;
+        bool small = true;
+        while (!st.empty()) {
+            const size_t c = st.back(); st.pop_back();
+            comp.push_back(c);
+            if (comp.size() > 2) small = false;
+            const int x = static_cast<int>(c % W), y = static_cast<int>(c / W);
+            const int d4[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+            for (auto& d : d4) {
+                const int X = x + d[0], Y = y + d[1];
+                if (X < 0 || Y < 0 || X >= W || Y >= H) { small = false; continue; }     // (the map's edge: never)
+                const size_t j = static_cast<size_t>(Y) * W + X;
+                if (!seen[j] && solid(j)) { seen[j] = 1; st.push_back(j); }
+            }
+        }
+        if (!small) continue;
+        bool all_plain = true;
+        for (size_t c : comp) if (!plain(c)) { all_plain = false; break; }
+        if (!all_plain) continue;
+        for (size_t c : comp) { open_cell(c); ++opened; }
+    }
+    return opened;
+}
+static int g_walls_opened = 0;
 static void write_area(const fs::path& d, const Area& A, const std::string& extra_json) {
     fs::create_directories(d);
     const int W = A.tw * 8, H = A.th * 8;
@@ -350,7 +387,21 @@ static void write_area(const fs::path& d, const Area& A, const std::string& extr
         std::vector<uint8_t> raw(walk.size(), 0);
         for (size_t i = 0; i < walk.size() && i < A.wa.size(); ++i) raw[i] = static_cast<uint8_t>((A.wa[i] ? 1 : 0) | ((i < A.wb.size() && A.wb[i]) ? 2 : 0));
         const std::vector<uint8_t> op = open_ledges(raw, A.tw, A.th);
-        for (size_t i = 0; i < walk.size(); ++i) walk[i] = static_cast<uint8_t>(raw[i] | op[i]) * 85;
+        for (size_t i = 0; i < walk.size(); ++i) walk[i] = static_cast<uint8_t>(raw[i] | op[i]);
+        auto plain = [&](size_t i) {       // only one layer shows anything here: the ground itself
+            int shown = 0;
+            for (int k = 0; k < 4; ++k) {
+                if (!A.tilemap[k] || i >= A.L[k].size()) continue;
+                bool anim = false;
+                const uint8_t* t = tile_px(A, A.L[k][i] & 0x3FF, &anim);
+                bool any = anim;
+                if (t) for (int q = 0; q < 64 && !any; ++q) any = t[q] != 0;
+                shown += any;
+            }
+            return shown <= 1;
+        };
+        g_walls_opened += open_invisible_walls(A.tw, A.th, plain, [&](size_t i) { return walk[i] == 0; }, [&](size_t i) { walk[i] = 1; });
+        for (size_t i = 0; i < walk.size(); ++i) walk[i] = static_cast<uint8_t>(walk[i] * 85);
     }
     romcat::save_png_gray((d / "walk.png").string(), walk, A.tw, A.th);
     std::string js = "{\"zone\":" + std::to_string(A.z) + ",\"area\":" + std::to_string(A.a) + ",\"tw\":" + std::to_string(A.tw) + ",\"th\":" + std::to_string(A.th);
@@ -1786,6 +1837,7 @@ static int fill_by_places(std::vector<uint32_t> (&WL)[5], std::vector<uint8_t>& 
 // like a bench, a planter or a wall everywhere else is never walked through.
 static std::unordered_map<uint64_t, std::pair<int, int>> g_look_walk;
 static std::unordered_map<uint32_t, std::pair<int, int>> g_ground_walk;    // the ground tile alone (a look never seen whole)
+static int g_decor_opened = 0;     // cells of the new land opened because what stands on them is walked over in the game (flowers)
 static void build_look_walk();
 static int fix_collision(const std::vector<uint32_t> (&WL)[5], std::vector<uint8_t>& walk, size_t from, size_t to, const std::vector<uint8_t>* keep = nullptr, const std::vector<uint8_t>* loose = nullptr) {
     if (g_look_walk.empty()) build_look_walk();
@@ -1797,16 +1849,18 @@ static int fix_collision(const std::vector<uint32_t> (&WL)[5], std::vector<uint8
         auto it = g_look_walk.find(GrowPool::sig(c));
         if (it == g_look_walk.end() || it->second.second < 10) {
             // the new land makes looks the game never had whole: then the ground and what stands on it decide
-            if (!(loose && (*loose)[i]) || (walk[i] & 1) || WL[1][i] || WL[2][i] || WL[3][i] || WL[4][i]) continue;
+            if (!(loose && (*loose)[i]) || (walk[i] & 1)) continue;
             auto gi = g_ground_walk.find(c[0]);
             if (gi == g_ground_walk.end() || gi->second.second < 10) continue;
+            // what stands on the ground (a flower, a tuft of grass) is walked over when the game mostly lets you walk
+            // over that very tile; anything never seen enough, or mostly solid (a trunk, a rock), keeps it a wall
             bool solid_top = false;
             for (int l = 1; l < 5 && !solid_top; ++l) {
                 if (!c[l]) continue;
                 auto ti = g_ground_walk.find(c[l]);
-                if (ti != g_ground_walk.end() && ti->second.second >= 10 && ti->second.first * 10 < ti->second.second * 3) solid_top = true;
+                if (ti == g_ground_walk.end() || ti->second.second < 10 || ti->second.first * 10 < ti->second.second * 5) solid_top = true;
             }
-            if (!solid_top && gi->second.first * 10 >= gi->second.second * 3) { walk[i] = 3; ++n; }
+            if (!solid_top && gi->second.first * 10 >= gi->second.second * 3) { walk[i] = 3; ++n; ++g_decor_opened; }
             continue;
         }
         const double f = static_cast<double>(it->second.first) / it->second.second;
@@ -1820,6 +1874,8 @@ static int fix_collision(const std::vector<uint32_t> (&WL)[5], std::vector<uint8
         // the game's own maps keep the game's own collision (only things it lets you walk through are closed);
         // only the new land between places is opened where it is ground
         if (!(walk[i] & 1) && loose && (*loose)[i] && f >= 0.3 && !water && bare && !manmade_tiles().count(c[0] & 0xFFFFu)) { walk[i] = 3; ++n; }
+        // the new land: ground with something small on it (flowers) that the game's maps let you walk over most of the time
+        else if (!(walk[i] & 1) && loose && (*loose)[i] && f >= 0.5 && !water && !bare && !manmade_tiles().count(c[0] & 0xFFFFu)) { walk[i] = 3; ++n; ++g_decor_opened; }
         else if ((walk[i] & 1) && f <= 0.12 && !(keep && (*keep)[i])) { walk[i] = 0; ++n; }
     }
     return n;
@@ -2489,6 +2545,26 @@ static void write_lkr(const fs::path& f, int W, int H, const std::vector<uint32_
     for (auto& l : WL) o.write(reinterpret_cast<const char*>(l.data()), static_cast<std::streamsize>(l.size() * 4));
     std::vector<uint8_t> w2(walk.size());
     for (size_t i = 0; i < walk.size(); ++i) w2[i] = walk[i] & 1;     // ready to use: no loop over every tile when the game loads it
+    auto plain = [&](size_t i) {
+        for (int l = 0; l < 5; ++l) if (WL[l][i] & (1u << 19)) return false;      // water
+        if (manmade_tiles().count(WL[0][i] & 0xFFFFu)) return false;               // a wall, a floor of a building
+        auto col = [](uint32_t v) { const uint32_t id = v & 0xFFFF; return id < g_tile_col.size() ? g_tile_col[id] : 0u; };
+        const uint32_t g0 = col(WL[0][i]);
+        for (int l = 1; l < 5; ++l) {
+            if (!WL[l][i]) continue;
+            auto ti = g_ground_walk.find(WL[l][i] & ~(3u << 16));
+            if (ti != g_ground_walk.end() && ti->second.second >= 10 && ti->second.first * 10 >= ti->second.second * 5) continue;   // walked over in the game
+            // or it does not stand out from the ground under it (a strip of grass on grass): it cannot be seen, so it cannot block
+            const uint32_t c = col(WL[l][i]);
+            if (!g0 || !c) return false;
+            const int d = std::abs(static_cast<int>(c & 255) - static_cast<int>(g0 & 255)) + std::abs(static_cast<int>((c >> 8) & 255) - static_cast<int>((g0 >> 8) & 255))
+                        + std::abs(static_cast<int>((c >> 16) & 255) - static_cast<int>((g0 >> 16) & 255));
+            if (d > 48) return false;
+        }
+        return true;
+    };
+    g_walls_opened += open_invisible_walls(W, H, plain,
+        [&](size_t i) { return !w2[i] && (WL[0][i] || WL[1][i] || WL[2][i] || WL[3][i] || WL[4][i]); }, [&](size_t i) { w2[i] = 1; });
     o.write(reinterpret_cast<const char*>(w2.data()), static_cast<std::streamsize>(w2.size()));
 }
 // a tile (all layers) that is only black or nearly (the dark round a cut-away room)
@@ -3022,6 +3098,7 @@ static void export_earth(const fs::path& dir) {
     std::vector<uint8_t> grown_mask(N, 0);     // the new land: walkable wherever it is ground at all
     for (size_t i = 0; i < static_cast<size_t>(W) * HP; ++i) grown_mask[i] = !orig[i] && !ocean[i];
     std::fprintf(stderr, "[earth] collision: %d tiles mended (no invisible walls, nothing walked through)\n", fix_collision(WL, walk, 0, N, &keep, &grown_mask));
+    std::fprintf(stderr, "[earth] %d tiles with flowers and the like on them made walkable\n", g_decor_opened);
     {   // plain ground (nothing standing on it) walked on in a third of the planet's places is ground everywhere
         std::unordered_map<uint32_t, std::pair<int, int>> st;
         const uint32_t F = ~(3u << 16);
@@ -3863,7 +3940,8 @@ int main(int argc, char** argv) {
     }
     if (argc > 3) { const int fl = export_floors(argv[3], out / "floors"); std::fprintf(stderr, "[export] %d adventure areas\n", fl); }
     // (no music from the game: you bring your own songs)
-    write_text(out / "version.txt", "19\n");
+    std::fprintf(stderr, "[export] %d invisible-wall tiles opened (lone walls with nothing solid on them)\n", g_walls_opened);
+    write_text(out / "version.txt", "21\n");
     std::fprintf(stderr, "[export] done: %s\n", out.string().c_str());
     return 0;
 }
