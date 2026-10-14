@@ -1,0 +1,70 @@
+{
+  "events": [
+    {
+      "id": "ex_elder",
+      "name": "THE ELDER",
+      "once": true,
+      "steps": [
+        {
+          "do": "say",
+          "text": "Ah, %s! Foes roam the field nearby. They keep coming back.",
+          "who": "ELDER"
+        },
+        {
+          "do": "choice",
+          "options": [
+            [
+              "YES",
+              "yes"
+            ],
+            [
+              "NOT NOW",
+              "no"
+            ]
+          ],
+          "text": "Will you help us?",
+          "who": "ELDER"
+        },
+        {
+          "do": "label",
+          "name": "yes"
+        },
+        {
+          "do": "say",
+          "text": "Thank you! Take these.",
+          "who": "ELDER"
+        },
+        {
+          "count": 2,
+          "do": "give",
+          "item": "senzu"
+        },
+        {
+          "amount": 100,
+          "do": "zeni"
+        },
+        {
+          "do": "flag",
+          "name": "ex_helping",
+          "on": true
+        },
+        {
+          "do": "end"
+        },
+        {
+          "do": "label",
+          "name": "no"
+        },
+        {
+          "do": "say",
+          "text": "Come back when you are ready.",
+          "who": "ELDER"
+        }
+      ],
+      "trigger": {
+        "person": "ELDER",
+        "type": "talk"
+      }
+    }
+  ]
+}

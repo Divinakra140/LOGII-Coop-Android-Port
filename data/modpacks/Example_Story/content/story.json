@@ -1,0 +1,24 @@
+{
+  "story": {
+    "credits": [
+      "A LOG2 CO-OP EXAMPLE STORY",
+      "",
+      "STORY, EVENTS AND MAP",
+      "THE DEV TOOLS",
+      "",
+      "MAKE YOUR OWN:",
+      "DEV TOOLS - STORY, EVENTS, MAP",
+      "",
+      "THANKS FOR PLAYING!"
+    ],
+    "credits_music": "victory",
+    "hero": "GOKU",
+    "id": "story",
+    "intro_event": "ks_intro",
+    "start_map": "land/0/0",
+    "subtitle": "A SHORT STORY MADE WITH THE DEV TOOLS",
+    "title": "THE MISSING KEY CAPSULE",
+    "x": 8088,
+    "y": 9568
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "_help": "Gear you wear. slot: weights, armor, scouter, boots, belt. Bonuses: str pwr end (added to your stats), speed and exp (+0.1 = +10%). rarity 1 common (white), 2 rare (blue), 3 epic (purple), 4 legendary (gold). level = needed to wear it. drop = chance an ordinary foe leaves it (strong foes 3x, bosses 6x, world bosses 12x). price 0 = not in the shop.",
+  "gear": [
+    {"id": "training_weights", "name": "TRAINING WEIGHTS", "slot": "weights", "rarity": 1, "level": 1, "str": 2, "drop": 0.01, "price": 150},
+    {"id": "turtle_gi_weights", "name": "TURTLE SHELL", "slot": "weights", "rarity": 2, "level": 6, "str": 5, "end": 2, "drop": 0.004, "price": 900},
+    {"id": "gravity_band", "name": "100X GRAVITY BAND", "slot": "weights", "rarity": 3, "level": 14, "str": 10, "pwr": 4, "drop": 0.0015, "price": 0},
+    {"id": "kaio_weights", "name": "KING KAI'S WEIGHTS", "slot": "weights", "rarity": 4, "level": 22, "str": 18, "pwr": 8, "end": 6, "drop": 0.0005, "price": 0},
+
+    {"id": "fighting_gi", "name": "FIGHTING GI", "slot": "armor", "rarity": 1, "level": 1, "end": 2, "drop": 0.01, "price": 150},
+    {"id": "saiyan_armor", "name": "SAIYAN ARMOR", "slot": "armor", "rarity": 2, "level": 6, "end": 6, "drop": 0.004, "price": 900},
+    {"id": "elite_armor", "name": "ELITE BATTLE ARMOR", "slot": "armor", "rarity": 3, "level": 14, "end": 12, "str": 3, "drop": 0.0015, "price": 0},
+    {"id": "royal_armor", "name": "ROYAL SAIYAN ARMOR", "slot": "armor", "rarity": 4, "level": 22, "end": 20, "str": 6, "pwr": 6, "drop": 0.0005, "price": 0},
+
+    {"id": "old_scouter", "name": "OLD SCOUTER", "slot": "scouter", "rarity": 1, "level": 1, "pwr": 2, "drop": 0.01, "price": 150},
+    {"id": "green_scouter", "name": "GREEN SCOUTER", "slot": "scouter", "rarity": 2, "level": 6, "pwr": 5, "exp": 0.05, "drop": 0.004, "price": 900},
+    {"id": "red_scouter", "name": "RED SCOUTER", "slot": "scouter", "rarity": 3, "level": 14, "pwr": 10, "exp": 0.1, "drop": 0.0015, "price": 0},
+    {"id": "dragon_radar", "name": "DRAGON RADAR", "slot": "scouter", "rarity": 4, "level": 22, "pwr": 16, "exp": 0.25, "drop": 0.0005, "price": 0},
+
+    {"id": "running_shoes", "name": "RUNNING SHOES", "slot": "boots", "rarity": 1, "level": 1, "speed": 0.05, "drop": 0.01, "price": 150},
+    {"id": "capsule_boots", "name": "CAPSULE CORP BOOTS", "slot": "boots", "rarity": 2, "level": 6, "speed": 0.1, "end": 2, "drop": 0.004, "price": 900},
+    {"id": "flying_nimbus", "name": "NIMBUS BOOTS", "slot": "boots", "rarity": 3, "level": 14, "speed": 0.18, "end": 4, "drop": 0.0015, "price": 0},
+    {"id": "instant_boots", "name": "INSTANT TRANSMISSION BOOTS", "slot": "boots", "rarity": 4, "level": 22, "speed": 0.28, "str": 5, "pwr": 5, "drop": 0.0005, "price": 0},
+
+    {"id": "champion_belt", "name": "CHAMPION BELT", "slot": "belt", "rarity": 2, "level": 4, "str": 3, "end": 3, "drop": 0.003, "price": 1200},
+    {"id": "dragon_belt", "name": "DRAGON BELT", "slot": "belt", "rarity": 4, "level": 20, "str": 10, "pwr": 10, "end": 10, "exp": 0.1, "drop": 0.0004, "price": 0}
+  ]
+}

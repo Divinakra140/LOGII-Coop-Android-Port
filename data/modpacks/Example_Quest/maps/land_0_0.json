@@ -1,0 +1,22 @@
+{
+  "people_add": [
+    {
+      "lines": [
+        [
+          "",
+          "FARMER",
+          "Wild animals keep eating my crops!"
+        ],
+        [
+          "",
+          "FARMER",
+          "Could you scare off five of them?"
+        ]
+      ],
+      "name": "FARMER",
+      "set": 54,
+      "x": 8392,
+      "y": 9632
+    }
+  ]
+}

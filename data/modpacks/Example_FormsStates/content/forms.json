@@ -1,0 +1,34 @@
+{
+ "forms": [
+  {
+   "id": "ub_goku",
+   "name": "ULTRA BLUE",
+   "who": "GOKU",
+   "level": 1,
+   "unlock": "reward",
+   "set": -1,
+   "str": 2.0,
+   "pwr": 2.0,
+   "end": 1.5,
+   "speed": 1.3,
+   "drain_ticks": 150,
+   "aura": "60a0ff",
+   "tint": "a0c0ff"
+  },
+  {
+   "id": "berserk_goku",
+   "name": "BERSERK",
+   "who": "GOKU",
+   "level": 1,
+   "unlock": "event",
+   "set": -1,
+   "str": 1.6,
+   "pwr": 1.2,
+   "end": 0.9,
+   "speed": 1.1,
+   "drain_ticks": 45,
+   "aura": "ff2020",
+   "tint": "ffb0b0"
+  }
+ ]
+}

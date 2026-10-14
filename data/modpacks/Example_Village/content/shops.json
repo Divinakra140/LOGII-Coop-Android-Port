@@ -1,0 +1,19 @@
+{
+  "shops": [
+    {
+      "id": "ex_shop",
+      "info": "Fresh from the field!",
+      "items": [
+        {
+          "id": "senzu",
+          "price": 120
+        },
+        {
+          "id": "hp_capsule",
+          "price": 40
+        }
+      ],
+      "name": "VILLAGE SHOP"
+    }
+  ]
+}

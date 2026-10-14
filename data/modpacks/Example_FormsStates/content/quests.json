@@ -1,0 +1,23 @@
+{
+ "quests": [
+  {
+   "id": "ub_trial",
+   "name": "THE MASTER'S TRIAL",
+   "info": "Beat 10 foes to earn ULTRA BLUE.",
+   "type": "kill",
+   "target": "any",
+   "count": 10,
+   "level": 1,
+   "from": "MASTER",
+   "reward": {
+    "zeni": 200,
+    "forms": [
+     "ub_goku"
+    ],
+    "states": [
+     "regen"
+    ]
+   }
+  }
+ ]
+}

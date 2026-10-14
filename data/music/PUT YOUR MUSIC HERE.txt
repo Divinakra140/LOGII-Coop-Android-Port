@@ -1,0 +1,5 @@
+Put your own songs here (.ogg or .mp3):
+  title.ogg  field.ogg  cave.ogg  lair.ogg  boss.ogg  victory.ogg
+Or name a song after a place and it plays there:
+  west city.ogg   big mouth.ogg   northern mountains.mp3   (the name shown when you walk in)
+Without a file, a little built-in tune plays.

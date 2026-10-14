@@ -1,0 +1,21 @@
+{
+  "quests": [
+    {
+      "count": 5,
+      "from": "FARMER",
+      "id": "ex_farmer",
+      "info": "Beat 5 animals for the farmer.",
+      "level": 1,
+      "name": "THE FARMER'S FIELD",
+      "reward": {
+        "exp": 0.5,
+        "items": {
+          "hp_capsule": 2
+        },
+        "zeni": 150
+      },
+      "target": "animal",
+      "type": "kill"
+    }
+  ]
+}

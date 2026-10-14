@@ -1,0 +1,48 @@
+{
+  "_help": "The people standing in the lands. Their places, looks and lines are read from your ROM (imported data/people.json); this file adds to them. talk_range: how near you must stand (pixels) to talk with A. heroes: names whose lines are the player's own (left out). names: a name for people of a sprite set the game never names. quiet: what people say when the game gives them nothing (by name, or 'default'). lines: replace one person's lines - key 'MAP:N' (N = their number on that map, from 0). hide: people to leave out ('MAP:N'). add: new people per map, {x, y, set, name, lines} in pixels of that map. fix_names: a name the game's text marks oddly -> the right one.",
+  "talk_range": 26,
+  "heroes": [
+    "GOHAN",
+    "GOKU",
+    "VEGETA",
+    "PICCOLO",
+    "TRUNKS",
+    "SUPER SAIYAN GOHAN"
+  ],
+  "names": {
+    "95": "NAMEK",
+    "26": "DOG",
+    "40": "BUNNY"
+  },
+  "quiet": {
+    "default": [
+      "Hello there!",
+      "Be careful out there - strange fighters have been seen around here.",
+      "They say the strong ones gather where the land gets wild."
+    ],
+    "NAMEK": [
+      "Thank you for finding me!",
+      "Please, bring the others home safely too."
+    ],
+    "DOG": [
+      "Woof!"
+    ],
+    "BUNNY": [
+      "...!"
+    ]
+  },
+  "lines": {},
+  "hide": [],
+  "add": {},
+  "fix_names": {
+    "OHAN": "GOHAN",
+    "OKU": "GOKU",
+    "ICCOLO": "PICCOLO",
+    "RUNKS": "TRUNKS",
+    "EGETA": "VEGETA",
+    "ERCULE": "HERCULE",
+    "ECEPTIONIST": "RECEPTIONIST",
+    "R. POPO": "MR. POPO",
+    "ENDE": "DENDE"
+  }
+}

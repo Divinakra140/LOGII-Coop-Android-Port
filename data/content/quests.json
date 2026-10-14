@@ -1,0 +1,24 @@
+{
+  "_help": "Missions (MENU - MISSIONS). Everyone in the same place gets the kill, so friends finish missions together. type: kill (target: any, elite, boss, worldboss, human, animal, robot, big, or an enemy type number), visit (where: part of a place's name), level (reach level 'count'). level = from which level it shows up. repeat = can be done again. reward: zeni, exp (1.0 = a whole level's worth), items {id: count} - gear ids work too. talk: speak with someone (who: the name shown over them). from: a person's name - the mission only opens once you talk with them.",
+  "quests": [
+    {"id": "first_steps", "name": "FIRST STEPS", "info": "Beat 5 foes.", "type": "kill", "target": "any", "count": 5, "level": 1, "reward": {"zeni": 60, "exp": 0.6, "items": {"hp_capsule": 2}}},
+    {"id": "explorer", "name": "EXPLORER", "info": "Find the coast.", "type": "visit", "where": "COAST", "level": 1, "reward": {"zeni": 80, "exp": 0.4}},
+    {"id": "wild_things", "name": "WILD THINGS", "info": "Beat 12 wild animals.", "type": "kill", "target": "animal", "count": 12, "level": 2, "reward": {"zeni": 150, "exp": 0.8, "items": {"running_shoes": 1}}},
+    {"id": "gold_hunter", "name": "GOLD HUNTER", "info": "Beat 3 strong (gold) foes.", "type": "kill", "target": "elite", "count": 3, "level": 3, "reward": {"zeni": 250, "exp": 1.0, "items": {"senzu": 1}}},
+    {"id": "scrap_metal", "name": "SCRAP METAL", "info": "Beat 10 robots or soldiers.", "type": "kill", "target": "robot", "count": 10, "level": 4, "reward": {"zeni": 200, "exp": 0.8, "items": {"old_scouter": 1}}},
+    {"id": "getting_stronger", "name": "GETTING STRONGER", "info": "Reach level 10.", "type": "level", "count": 10, "level": 1, "reward": {"zeni": 500, "items": {"power_pill": 2, "spirit_pill": 2}}},
+    {"id": "big_game", "name": "BIG GAME", "info": "Beat 5 giants.", "type": "kill", "target": "big", "count": 5, "level": 6, "reward": {"zeni": 400, "exp": 1.2, "items": {"saiyan_armor": 1}}},
+    {"id": "boss_slayer", "name": "BOSS SLAYER", "info": "Beat the boss of the planet.", "type": "kill", "target": "boss", "count": 1, "level": 1, "reward": {"zeni": 1000, "exp": 2.0, "items": {"senzu": 2}}},
+    {"id": "world_boss", "name": "LEGEND HUNTERS", "info": "Beat a WORLD BOSS together.", "type": "kill", "target": "worldboss", "count": 1, "level": 1, "reward": {"zeni": 1500, "exp": 2.0, "items": {"training_scroll": 1}}},
+    {"id": "daily_hunt", "name": "DAILY HUNT", "info": "Beat 30 foes. (again and again)", "type": "kill", "target": "any", "count": 30, "level": 5, "repeat": true, "reward": {"zeni": 300, "exp": 1.0, "items": {"senzu": 1}}},
+    {"id": "elite_hunt", "name": "ELITE HUNT", "info": "Beat 5 strong foes. (again and again)", "type": "kill", "target": "elite", "count": 5, "level": 8, "repeat": true, "reward": {"zeni": 600, "exp": 1.5}},
+    {"id": "master", "name": "TRUE MASTER", "info": "Reach level 25.", "type": "level", "count": 25, "level": 15, "reward": {"zeni": 3000, "items": {"dragon_belt": 1}}},
+    {"id": "meet_hercule", "name": "A FAMOUS FACE", "info": "Find Hercule in West City and talk to him.", "type": "talk", "who": "HERCULE", "level": 1, "reward": {"zeni": 100, "exp": 0.3}},
+    {"id": "hercule_challenge", "name": "HERCULE'S CHALLENGE", "info": "Hercule bets you can't beat 5 strong (gold) foes.", "from": "HERCULE", "type": "kill", "target": "elite", "count": 5, "level": 1, "reward": {"zeni": 400, "exp": 1.0, "items": {"senzu": 1}}},
+    {"id": "city_guard", "name": "KEEP THE PEACE", "info": "A West City guard wants 15 robots or soldiers stopped.", "from": "GUARD", "type": "kill", "target": "robot", "count": 15, "level": 1, "reward": {"zeni": 300, "exp": 0.8, "items": {"hp_capsule": 3}}},
+    {"id": "mothers_worry", "name": "A MOTHER'S WORRY", "info": "Chi-Chi wants the wild animals near home driven off: beat 15.", "from": "CHI-CHI", "type": "kill", "target": "animal", "count": 15, "level": 1, "reward": {"zeni": 200, "exp": 0.8, "items": {"senzu": 1}}},
+    {"id": "krillin_training", "name": "SPARRING PARTNER", "info": "Krillin says real training means 40 foes. Any kind.", "from": "KRILLIN", "type": "kill", "target": "any", "count": 40, "level": 1, "reward": {"zeni": 350, "exp": 1.5}},
+    {"id": "mayor_request", "name": "THE MAYOR'S REQUEST", "info": "The mayor asks you to beat a boss that threatens the town.", "from": "MAYOR", "type": "kill", "target": "boss", "count": 1, "level": 1, "reward": {"zeni": 800, "exp": 2.0, "items": {"senzu": 2}}},
+    {"id": "kids_game", "name": "PLAYTIME", "info": "Billy and Trent want to play. Say hi to Trent too.", "from": "BILLY", "type": "talk", "who": "TRENT", "level": 1, "reward": {"zeni": 50, "exp": 0.2, "items": {"hp_capsule": 1}}}
+  ]
+}

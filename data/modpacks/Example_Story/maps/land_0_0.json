@@ -1,0 +1,122 @@
+{
+  "doors_add": [
+    {
+      "arrive": [
+        10560,
+        21356
+      ],
+      "locked_msg": "LOCKED. THE PROFESSOR'S KEY CAPSULE WOULD OPEN IT.",
+      "need_item": "key_capsule",
+      "rect": [
+        8072,
+        9464,
+        8081,
+        9485
+      ],
+      "take_item": true,
+      "to": "land/0/0"
+    }
+  ],
+  "doors_del": [
+    [
+      8076.5,
+      9474.5
+    ]
+  ],
+  "items": [
+    {
+      "count": 1,
+      "id": "hp_capsule",
+      "x": 8256,
+      "y": 9400
+    }
+  ],
+  "moods": [
+    {
+      "dark": 0.65,
+      "light": 80,
+      "music": "cave",
+      "rect": [
+        7752,
+        9844,
+        8072,
+        10124
+      ],
+      "weather": "ash"
+    }
+  ],
+  "people_add": [
+    {
+      "event": "ks_clue1",
+      "lines": [
+        [
+          "",
+          "WORKER",
+          "Have you heard? The professor's lab was robbed."
+        ]
+      ],
+      "name": "WORKER",
+      "set": 35,
+      "x": 8248,
+      "y": 9568
+    },
+    {
+      "event": "ks_clue2",
+      "lines": [
+        [
+          "",
+          "GRANNY",
+          "Have you heard? The professor's lab was robbed."
+        ]
+      ],
+      "name": "GRANNY",
+      "set": 33,
+      "x": 7936,
+      "y": 9608
+    },
+    {
+      "event": "ks_clue3",
+      "lines": [
+        [
+          "",
+          "BOY",
+          "Have you heard? The professor's lab was robbed."
+        ]
+      ],
+      "name": "BOY",
+      "set": 21,
+      "x": 7952,
+      "y": 9488
+    }
+  ],
+  "triggers": [
+    {
+      "event": "ks_lair",
+      "rect": [
+        7872,
+        9968,
+        7952,
+        10016
+      ]
+    },
+    {
+      "attack": true,
+      "event": "ks_crate",
+      "rect": [
+        8248,
+        9392,
+        8264,
+        9408
+      ]
+    },
+    {
+      "event": "ks_end",
+      "rect": [
+        10528,
+        21316,
+        10592,
+        21364
+      ]
+    }
+  ]
+}

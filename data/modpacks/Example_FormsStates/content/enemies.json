@@ -1,0 +1,11 @@
+{
+ "types": [
+  {
+   "type": 8,
+   "inflict": {
+    "state": "slow",
+    "chance": 0.25
+   }
+  }
+ ]
+}

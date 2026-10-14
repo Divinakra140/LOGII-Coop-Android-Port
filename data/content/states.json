@@ -1,0 +1,101 @@
+{
+ "_help": "States (DEV TOOLS - STATES): what can be on a fighter for a while. seconds (0 = until an event or item takes it away). hp_per_sec / ep_per_sec (minus: poison), can_kill (poison may knock you out), str / pwr / end / speed (x), blind (you see only round you), stun (can't move or act), no_ki (no ki blasts, moves or beams), no_transform, confuse (left and right swap), form (turned into this transformation while it lasts), tint, aura, msg (shown when it starts). Put on with: an event (STATE step), a move (self_state on you, inflict on foes hit), a foe kind (ENEMIES: inflict when it hits you), an item (state, cure).",
+ "states": [
+  {
+   "id": "poison",
+   "name": "POISON",
+   "msg": "POISONED!",
+   "seconds": 10,
+   "hp_per_sec": -3,
+   "can_kill": false,
+   "tint": "c890ff",
+   "color": "b060ff"
+  },
+  {
+   "id": "regen",
+   "name": "REGENERATION",
+   "msg": "REGENERATING",
+   "seconds": 15,
+   "hp_per_sec": 4,
+   "tint": "c0ffc0",
+   "color": "60ff80"
+  },
+  {
+   "id": "slow",
+   "name": "SLOW",
+   "msg": "SLOWED DOWN!",
+   "seconds": 8,
+   "speed": 0.6,
+   "color": "80a0ff"
+  },
+  {
+   "id": "haste",
+   "name": "HASTE",
+   "msg": "SPEED UP!",
+   "seconds": 20,
+   "speed": 1.4,
+   "color": "80ffff"
+  },
+  {
+   "id": "weak",
+   "name": "WEAKENED",
+   "msg": "WEAKENED!",
+   "seconds": 12,
+   "str": 0.7,
+   "pwr": 0.7,
+   "color": "a0a0a0"
+  },
+  {
+   "id": "rage",
+   "name": "RAGE",
+   "msg": "FULL OF RAGE!",
+   "seconds": 15,
+   "str": 1.4,
+   "end": 0.85,
+   "tint": "ffb0b0",
+   "aura": "ff3030",
+   "color": "ff4040"
+  },
+  {
+   "id": "iron_skin",
+   "name": "IRON SKIN",
+   "msg": "IRON SKIN!",
+   "seconds": 20,
+   "end": 1.5,
+   "color": "c0c0d0"
+  },
+  {
+   "id": "blind",
+   "name": "BLIND",
+   "msg": "BLINDED!",
+   "seconds": 8,
+   "blind": true,
+   "color": "404040"
+  },
+  {
+   "id": "stun",
+   "name": "PARALYSED",
+   "msg": "PARALYSED!",
+   "seconds": 2,
+   "stun": true,
+   "color": "ffff60"
+  },
+  {
+   "id": "silence",
+   "name": "KI SEALED",
+   "msg": "YOUR KI IS SEALED!",
+   "seconds": 10,
+   "no_ki": true,
+   "no_transform": true,
+   "color": "ff80c0"
+  },
+  {
+   "id": "confuse",
+   "name": "CONFUSED",
+   "msg": "CONFUSED!",
+   "seconds": 8,
+   "confuse": true,
+   "color": "ff80ff"
+  }
+ ]
+}

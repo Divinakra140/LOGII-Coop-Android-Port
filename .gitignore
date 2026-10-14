@@ -1,0 +1,39 @@
+# --- copyrighted: the ROM and everything read from it (each player uses their own cartridge) ---
+*.gba
+*.GBA
+*.sav
+data/imported/
+# made from data/ by tools/make_pack.py at build time
+project/bundle/gamedata.pack
+# your own songs / sounds are not part of the game
+data/music/*.ogg
+data/music/*.mp3
+data/sounds/
+
+# --- the release signing key: never public ---
+keys/
+*.keystore
+*.jks
+keystore_password.txt
+
+# --- build outputs and the downloaded Godot export templates ---
+out/
+templates/
+*.apk
+*.aab
+*.idsig
+importer/godot_export
+importer/android/
+importer/source/godot_export
+importer/source/build/
+
+# --- Godot editor cache ---
+project/.godot/
+project/android/
+
+# --- macOS / exFAT clutter ---
+._*
+.DS_Store
+
+# this machine's tool paths
+tools/local.env

@@ -1,0 +1,46 @@
+{
+ "skills": [
+  {
+   "id": "poison_ball",
+   "name": "POISON BALL",
+   "who": [
+    "GOKU"
+   ],
+   "level": 3,
+   "ep": 4,
+   "cooldown": 90,
+   "type": "bomb",
+   "power": 1.5,
+   "stat": "pwr",
+   "speed": 5,
+   "range": 200,
+   "width": 10,
+   "color": "b060ff",
+   "sfx": "beam",
+   "info": "Poisons what it hits.",
+   "inflict": {
+    "state": "poison",
+    "chance": 1.0,
+    "seconds": 8
+   }
+  },
+  {
+   "id": "limit_break",
+   "name": "LIMIT BREAK",
+   "who": [
+    "GOKU"
+   ],
+   "level": 5,
+   "ep": 8,
+   "cooldown": 600,
+   "type": "buff",
+   "power": 1,
+   "stat": "pwr",
+   "color": "ff4040",
+   "sfx": "heal",
+   "info": "Break your limits: rage, then BERSERK.",
+   "then_form": "berserk_goku",
+   "self_state": "rage"
+  }
+ ]
+}

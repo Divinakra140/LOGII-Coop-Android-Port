@@ -1,0 +1,474 @@
+{
+ "_help": "Special moves. Add or change freely - the game reads this file at start (a copy in the 'content' folder next to LoG2Coop.exe wins). See content/README.txt for every field. rom: the hero's own attack from the game, drawn exactly as there (content/rom_specials.json) - hold the button to keep a beam out.",
+ "skills": [
+  {
+   "id": "kamehameha",
+   "name": "KAMEHAMEHA",
+   "who": [
+    "GOKU"
+   ],
+   "level": 1,
+   "ep": 6,
+   "cooldown": 90,
+   "type": "beam",
+   "charge": 36,
+   "power": 3.2,
+   "stat": "pwr",
+   "speed": 6,
+   "range": 260,
+   "width": 12,
+   "color": "7fd8ff",
+   "sfx": "beam",
+   "info": "The game's own Kamehameha: gather it at the hip, then the beam - hold the button to keep it out.",
+   "look": "blue",
+   "rom": "kame"
+  },
+  {
+   "id": "dragon_dash",
+   "name": "DRAGON DASH",
+   "who": [
+    "GOKU"
+   ],
+   "level": 6,
+   "ep": 4,
+   "cooldown": 60,
+   "type": "dash",
+   "power": 2.2,
+   "stat": "str",
+   "speed": 4.5,
+   "range": 120,
+   "color": "ffd27f",
+   "sfx": "dash",
+   "info": "Fly forward like a rocket, striking everything in the way."
+  },
+  {
+   "id": "solar_flare",
+   "name": "SOLAR FLARE",
+   "who": [
+    "GOKU"
+   ],
+   "level": 12,
+   "ep": 5,
+   "cooldown": 300,
+   "type": "flash",
+   "range": 150,
+   "stun": 150,
+   "color": "ffffd0",
+   "sfx": "flash",
+   "info": "A blinding flash: foes around you stand dazed for 2.5 seconds."
+  },
+  {
+   "id": "spirit_bomb",
+   "name": "SPIRIT BOMB",
+   "who": [
+    "GOKU"
+   ],
+   "level": 25,
+   "ep": 16,
+   "cooldown": 600,
+   "type": "bomb",
+   "charge": 90,
+   "power": 9.0,
+   "stat": "pwr",
+   "speed": 2.2,
+   "range": 170,
+   "radius": 80,
+   "size": 16,
+   "color": "aee8ff",
+   "sfx": "bomb",
+   "info": "Gather energy, then throw a huge sphere that wipes out a whole crowd.",
+   "look": "spirit"
+  },
+  {
+   "id": "masenko",
+   "name": "MASENKO",
+   "who": [
+    "GOHAN"
+   ],
+   "level": 1,
+   "ep": 5,
+   "cooldown": 80,
+   "type": "beam",
+   "charge": 28,
+   "power": 2.8,
+   "stat": "pwr",
+   "speed": 6,
+   "range": 230,
+   "width": 10,
+   "color": "ffe27a",
+   "sfx": "beam",
+   "info": "The game's own blast: thrown in an arc, it bursts where it lands.",
+   "look": "yellow",
+   "rom": "masenko"
+  },
+  {
+   "id": "ki_volley",
+   "name": "KI VOLLEY",
+   "who": [
+    "GOHAN"
+   ],
+   "level": 6,
+   "ep": 5,
+   "cooldown": 70,
+   "type": "volley",
+   "count": 6,
+   "power": 0.9,
+   "stat": "pwr",
+   "speed": 3.6,
+   "range": 220,
+   "color": "ffd060",
+   "sfx": "ki",
+   "info": "Six ki blasts in a row."
+  },
+  {
+   "id": "burst_of_rage",
+   "name": "BURST OF RAGE",
+   "who": [
+    "GOHAN"
+   ],
+   "level": 12,
+   "ep": 7,
+   "cooldown": 200,
+   "type": "wave",
+   "power": 2.6,
+   "stat": "pwr",
+   "range": 70,
+   "color": "fff0a0",
+   "sfx": "wave",
+   "info": "Hidden power explodes outward, throwing back every foe around you."
+  },
+  {
+   "id": "super_kamehameha",
+   "name": "FATHER-SON KAMEHAMEHA",
+   "who": [
+    "GOHAN"
+   ],
+   "level": 22,
+   "ep": 14,
+   "cooldown": 480,
+   "type": "beam",
+   "charge": 60,
+   "power": 5.5,
+   "stat": "pwr",
+   "speed": 7,
+   "range": 320,
+   "width": 22,
+   "color": "8fe0ff",
+   "sfx": "beam",
+   "info": "The beam that ended Cell.",
+   "look": "blue"
+  },
+  {
+   "id": "special_beam_cannon",
+   "name": "SPECIAL BEAM CANNON",
+   "who": [
+    "PICCOLO"
+   ],
+   "level": 1,
+   "ep": 7,
+   "cooldown": 110,
+   "type": "beam",
+   "charge": 56,
+   "power": 4.6,
+   "stat": "pwr",
+   "speed": 8,
+   "range": 300,
+   "width": 5,
+   "color": "ffa0ff",
+   "sfx": "beam",
+   "info": "The game's own thin beam - hold the button to keep it out.",
+   "look": "red",
+   "rom": "sbc"
+  },
+  {
+   "id": "stretch_punch",
+   "name": "STRETCH PUNCH",
+   "who": [
+    "PICCOLO"
+   ],
+   "level": 4,
+   "ep": 2,
+   "cooldown": 40,
+   "type": "stretch",
+   "power": 2.0,
+   "stat": "str",
+   "range": 96,
+   "color": "60d060",
+   "sfx": "punch",
+   "info": "Your arm reaches far across the field."
+  },
+  {
+   "id": "regenerate",
+   "name": "REGENERATE",
+   "who": [
+    "PICCOLO"
+   ],
+   "level": 10,
+   "ep": 8,
+   "cooldown": 600,
+   "type": "heal",
+   "heal": 0.45,
+   "color": "80ff90",
+   "sfx": "heal",
+   "info": "Grow back what was lost: heals almost half your health."
+  },
+  {
+   "id": "hellzone_grenade",
+   "name": "HELLZONE GRENADE",
+   "who": [
+    "PICCOLO"
+   ],
+   "level": 18,
+   "ep": 10,
+   "cooldown": 300,
+   "type": "volley",
+   "count": 10,
+   "spread": 1,
+   "power": 1.2,
+   "stat": "pwr",
+   "speed": 3.0,
+   "range": 200,
+   "color": "f8ff80",
+   "sfx": "ki",
+   "info": "Ten blasts flying out in every direction."
+  },
+  {
+   "id": "galick_gun",
+   "name": "GALICK GUN",
+   "who": [
+    "VEGETA"
+   ],
+   "level": 1,
+   "ep": 6,
+   "cooldown": 90,
+   "type": "beam",
+   "charge": 34,
+   "power": 3.3,
+   "stat": "pwr",
+   "speed": 6,
+   "range": 250,
+   "width": 13,
+   "color": "c88cff",
+   "sfx": "beam",
+   "info": "The game's own big ki ball, straight ahead.",
+   "look": "purple",
+   "rom": "bigki"
+  },
+  {
+   "id": "big_bang",
+   "name": "BIG BANG ATTACK",
+   "who": [
+    "VEGETA"
+   ],
+   "level": 8,
+   "ep": 7,
+   "cooldown": 150,
+   "type": "bomb",
+   "charge": 18,
+   "power": 4.0,
+   "stat": "pwr",
+   "speed": 4.0,
+   "range": 200,
+   "radius": 48,
+   "size": 9,
+   "color": "a0d8ff",
+   "sfx": "bomb",
+   "info": "A fast ball of energy that bursts on the first foe.",
+   "look": "bigbang"
+  },
+  {
+   "id": "explosive_wave",
+   "name": "EXPLOSIVE WAVE",
+   "who": [
+    "VEGETA"
+   ],
+   "level": 14,
+   "ep": 8,
+   "cooldown": 220,
+   "type": "wave",
+   "power": 3.0,
+   "stat": "pwr",
+   "range": 80,
+   "color": "ffffff",
+   "sfx": "wave",
+   "info": "A dome of energy all around you."
+  },
+  {
+   "id": "final_flash",
+   "name": "FINAL FLASH",
+   "who": [
+    "VEGETA"
+   ],
+   "level": 24,
+   "ep": 15,
+   "cooldown": 480,
+   "type": "beam",
+   "charge": 70,
+   "power": 6.0,
+   "stat": "pwr",
+   "speed": 7,
+   "range": 340,
+   "width": 24,
+   "color": "fff27a",
+   "sfx": "beam",
+   "info": "The greatest beam of the Saiyan prince.",
+   "look": "yellow"
+  },
+  {
+   "id": "sword_slash",
+   "name": "SWORD SLASH",
+   "who": [
+    "TRUNKS"
+   ],
+   "level": 1,
+   "ep": 2,
+   "cooldown": 30,
+   "type": "slash",
+   "power": 2.4,
+   "stat": "str",
+   "range": 46,
+   "color": "e0f0ff",
+   "sfx": "slash",
+   "info": "A wide cut with the sword."
+  },
+  {
+   "id": "burning_attack",
+   "name": "BURNING ATTACK",
+   "who": [
+    "TRUNKS"
+   ],
+   "level": 1,
+   "ep": 6,
+   "cooldown": 120,
+   "type": "bomb",
+   "charge": 24,
+   "power": 3.6,
+   "stat": "pwr",
+   "speed": 3.5,
+   "range": 200,
+   "radius": 44,
+   "size": 8,
+   "color": "ffb050",
+   "sfx": "bomb",
+   "info": "The game's own blazing ball, straight ahead.",
+   "look": "orange",
+   "rom": "burning"
+  },
+  {
+   "id": "shining_sword",
+   "name": "SHINING SWORD",
+   "who": [
+    "TRUNKS"
+   ],
+   "level": 14,
+   "ep": 7,
+   "cooldown": 150,
+   "type": "dash",
+   "power": 3.2,
+   "stat": "str",
+   "speed": 5.0,
+   "range": 130,
+   "color": "c0e0ff",
+   "sfx": "slash",
+   "info": "Dash through the foes, cutting them all."
+  },
+  {
+   "id": "finish_buster",
+   "name": "FINISH BUSTER",
+   "who": [
+    "TRUNKS"
+   ],
+   "level": 22,
+   "ep": 14,
+   "cooldown": 480,
+   "type": "bomb",
+   "charge": 50,
+   "power": 7.0,
+   "stat": "pwr",
+   "speed": 2.8,
+   "range": 220,
+   "radius": 70,
+   "size": 13,
+   "color": "ffe080",
+   "sfx": "bomb",
+   "info": "A huge golden blast held over the head.",
+   "look": "orange"
+  },
+  {
+   "id": "dynamite_kick",
+   "name": "DYNAMITE KICK",
+   "who": [
+    "MR. SATAN"
+   ],
+   "level": 1,
+   "ep": 2,
+   "cooldown": 50,
+   "type": "dash",
+   "power": 2.0,
+   "stat": "str",
+   "speed": 4.0,
+   "range": 90,
+   "color": "ffb080",
+   "sfx": "dash",
+   "info": "The champion's flying kick!"
+  },
+  {
+   "id": "megaton_punch",
+   "name": "MEGATON PUNCH",
+   "who": [
+    "MR. SATAN"
+   ],
+   "level": 5,
+   "ep": 3,
+   "cooldown": 60,
+   "type": "stretch",
+   "power": 3.6,
+   "stat": "str",
+   "range": 42,
+   "color": "ffd0a0",
+   "sfx": "punch",
+   "info": "One huge punch that sends a foe flying."
+  },
+  {
+   "id": "present_bomb",
+   "name": "PRESENT BOMB",
+   "who": [
+    "MR. SATAN"
+   ],
+   "level": 10,
+   "ep": 6,
+   "cooldown": 160,
+   "type": "bomb",
+   "charge": 20,
+   "power": 4.2,
+   "stat": "str",
+   "speed": 2.4,
+   "range": 150,
+   "radius": 52,
+   "size": 7,
+   "color": "ff6070",
+   "sfx": "bomb",
+   "info": "A gift for the bad guys. Surprise!",
+   "look": "present"
+  },
+  {
+   "id": "victory_pose",
+   "name": "VICTORY POSE",
+   "who": [
+    "MR. SATAN"
+   ],
+   "level": 16,
+   "ep": 6,
+   "cooldown": 900,
+   "type": "buff",
+   "buffs": {
+    "str": 1.5,
+    "end": 1.5
+   },
+   "ticks": 900,
+   "color": "ffe060",
+   "sfx": "heal",
+   "info": "The crowd cheers: stronger and tougher for 15 seconds."
+  }
+ ]
+}

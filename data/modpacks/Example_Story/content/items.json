@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "color": "ffd060",
+      "id": "key_capsule",
+      "info": "Opens the professor's lab. Not for eating.",
+      "max": 1,
+      "name": "KEY CAPSULE",
+      "price": 0
+    }
+  ]
+}

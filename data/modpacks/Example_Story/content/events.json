@@ -1,0 +1,560 @@
+{
+  "events": [
+    {
+      "id": "ks_intro",
+      "name": "STORY: THE BREAK-IN",
+      "steps": [
+        {
+          "dir": "left",
+          "do": "show_person",
+          "name": "PROFESSOR",
+          "set": 111,
+          "x": 8168,
+          "y": 9568
+        },
+        {
+          "do": "camera",
+          "frames": 50,
+          "who": "PROFESSOR",
+          "zoom": 1.5
+        },
+        {
+          "do": "emote",
+          "kind": "!",
+          "who": "PROFESSOR"
+        },
+        {
+          "do": "wait",
+          "frames": 30
+        },
+        {
+          "do": "move",
+          "speed": 1.2,
+          "who": "PROFESSOR",
+          "x": 8114,
+          "y": 9568
+        },
+        {
+          "do": "camera_back"
+        },
+        {
+          "dir": "right",
+          "do": "face",
+          "who": "PLAYER"
+        },
+        {
+          "do": "say",
+          "face": 111,
+          "text": "%s! Thank goodness you're here!",
+          "who": "PROFESSOR"
+        },
+        {
+          "do": "say",
+          "face": 111,
+          "text": "Someone broke into my lab last night and took the KEY CAPSULE.",
+          "who": "PROFESSOR"
+        },
+        {
+          "do": "say",
+          "face": 111,
+          "text": "Without it my vault stays shut - and my newest invention is locked inside!",
+          "who": "PROFESSOR"
+        },
+        {
+          "dir": "right",
+          "do": "show_person",
+          "name": "KRILLIN",
+          "set": 76,
+          "x": 7998,
+          "y": 9576
+        },
+        {
+          "do": "move",
+          "speed": 1.6,
+          "who": "KRILLIN",
+          "x": 8064,
+          "y": 9572
+        },
+        {
+          "dir": "left",
+          "do": "face",
+          "who": "PLAYER"
+        },
+        {
+          "do": "emote",
+          "kind": "!!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "I heard everything. Count me in!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "hide_person",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "companion",
+          "level": 0,
+          "name": "KRILLIN",
+          "who": "76"
+        },
+        {
+          "dir": "right",
+          "do": "face",
+          "who": "PLAYER"
+        },
+        {
+          "do": "say",
+          "face": 111,
+          "text": "Ask around town. Somebody must have seen the thief.",
+          "who": "PROFESSOR"
+        },
+        {
+          "do": "var",
+          "name": "clues",
+          "op": "set",
+          "value": 0
+        },
+        {
+          "do": "toast",
+          "text": "FIND 3 CLUES - TALK TO THE PEOPLE IN TOWN"
+        },
+        {
+          "do": "save"
+        }
+      ],
+      "trigger": {
+        "type": "none"
+      }
+    },
+    {
+      "id": "ks_clue1",
+      "if": {
+        "flags": [
+          "event:ks_intro"
+        ]
+      },
+      "name": "STORY: CLUE 1",
+      "steps": [
+        {
+          "do": "say",
+          "face": 35,
+          "text": "A shadow ran past me with something shiny. It smelled like wet fur.",
+          "who": "WORKER"
+        },
+        {
+          "do": "var",
+          "name": "clues",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "do": "toast",
+          "text": "CLUES: {var:clues} / 3"
+        },
+        {
+          "cmp": ">=",
+          "do": "if_var",
+          "goto": "all",
+          "name": "clues",
+          "value": 3
+        },
+        {
+          "do": "end"
+        },
+        {
+          "do": "label",
+          "name": "all"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "That's all three! The thief is hiding in the park. Let's hurry before the beasts scatter!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "flag",
+          "name": "ks_trail",
+          "on": true
+        },
+        {
+          "do": "timer",
+          "name": "beasts scatter",
+          "seconds": 150,
+          "show": true
+        },
+        {
+          "do": "toast",
+          "text": "GO TO THE PARK"
+        },
+        {
+          "do": "save"
+        }
+      ],
+      "trigger": {
+        "person": "WORKER",
+        "type": "talk"
+      }
+    },
+    {
+      "id": "ks_clue2",
+      "if": {
+        "flags": [
+          "event:ks_intro"
+        ]
+      },
+      "name": "STORY: CLUE 2",
+      "steps": [
+        {
+          "do": "say",
+          "face": 33,
+          "text": "Beasts were howling all night. They come from the park when it gets dark.",
+          "who": "GRANNY"
+        },
+        {
+          "do": "var",
+          "name": "clues",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "do": "toast",
+          "text": "CLUES: {var:clues} / 3"
+        },
+        {
+          "cmp": ">=",
+          "do": "if_var",
+          "goto": "all",
+          "name": "clues",
+          "value": 3
+        },
+        {
+          "do": "end"
+        },
+        {
+          "do": "label",
+          "name": "all"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "That's all three! The thief is hiding in the park. Let's hurry before the beasts scatter!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "flag",
+          "name": "ks_trail",
+          "on": true
+        },
+        {
+          "do": "timer",
+          "name": "beasts scatter",
+          "seconds": 150,
+          "show": true
+        },
+        {
+          "do": "toast",
+          "text": "GO TO THE PARK"
+        },
+        {
+          "do": "save"
+        }
+      ],
+      "trigger": {
+        "person": "GRANNY",
+        "type": "talk"
+      }
+    },
+    {
+      "id": "ks_clue3",
+      "if": {
+        "flags": [
+          "event:ks_intro"
+        ]
+      },
+      "name": "STORY: CLUE 3",
+      "steps": [
+        {
+          "do": "say",
+          "face": 21,
+          "text": "I saw a big wolf carrying a capsule in its mouth! Nobody believes me.",
+          "who": "BOY"
+        },
+        {
+          "do": "var",
+          "name": "clues",
+          "op": "add",
+          "value": 1
+        },
+        {
+          "do": "toast",
+          "text": "CLUES: {var:clues} / 3"
+        },
+        {
+          "cmp": ">=",
+          "do": "if_var",
+          "goto": "all",
+          "name": "clues",
+          "value": 3
+        },
+        {
+          "do": "end"
+        },
+        {
+          "do": "label",
+          "name": "all"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "That's all three! The thief is hiding in the park. Let's hurry before the beasts scatter!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "flag",
+          "name": "ks_trail",
+          "on": true
+        },
+        {
+          "do": "timer",
+          "name": "beasts scatter",
+          "seconds": 150,
+          "show": true
+        },
+        {
+          "do": "toast",
+          "text": "GO TO THE PARK"
+        },
+        {
+          "do": "save"
+        }
+      ],
+      "trigger": {
+        "person": "BOY",
+        "type": "talk"
+      }
+    },
+    {
+      "id": "ks_lair",
+      "if": {
+        "flags": [
+          "ks_trail"
+        ],
+        "not_flags": [
+          "ks_capsule"
+        ]
+      },
+      "name": "STORY: THE BEAST LEADER",
+      "once": false,
+      "steps": [
+        {
+          "do": "emote",
+          "kind": "!",
+          "who": "PLAYER"
+        },
+        {
+          "amount": 4,
+          "do": "shake"
+        },
+        {
+          "do": "if_timer",
+          "goto": "late",
+          "name": "beasts scatter"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "There! The big one has the capsule!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "boss_fight",
+          "hp": 2.5,
+          "kind": 8,
+          "lose": "lost",
+          "name": "BEAST LEADER",
+          "phases": "0.5:howl",
+          "win": "won",
+          "x": 7912,
+          "y": 9954
+        },
+        {
+          "do": "label",
+          "name": "late"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "We took too long - the pack has gathered round it. It looks stronger!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "boss_fight",
+          "hp": 3.5,
+          "kind": 8,
+          "lose": "lost",
+          "name": "BEAST LEADER",
+          "phases": "0.5:howl",
+          "win": "won",
+          "x": 7912,
+          "y": 9954
+        },
+        {
+          "do": "label",
+          "name": "howl"
+        },
+        {
+          "amount": 6,
+          "do": "shake"
+        },
+        {
+          "do": "say",
+          "text": "GRRRR... AWOOOOO!",
+          "who": "BEAST LEADER"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "It's getting angry! Keep going!",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "fight_on"
+        },
+        {
+          "do": "label",
+          "name": "won"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "It dropped the KEY CAPSULE! Let's take it back to the lab.",
+          "who": "KRILLIN"
+        },
+        {
+          "count": 1,
+          "do": "give",
+          "item": "key_capsule"
+        },
+        {
+          "do": "flag",
+          "name": "ks_capsule",
+          "on": true
+        },
+        {
+          "do": "toast",
+          "text": "BRING THE KEY CAPSULE TO THE LAB"
+        },
+        {
+          "do": "save"
+        },
+        {
+          "do": "end"
+        },
+        {
+          "do": "label",
+          "name": "lost"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "Ouch... Let's catch our breath and try again.",
+          "who": "KRILLIN"
+        }
+      ],
+      "trigger": {
+        "type": "area"
+      }
+    },
+    {
+      "id": "ks_crate",
+      "name": "STORY: A CRATE",
+      "steps": [
+        {
+          "amount": 2,
+          "do": "shake"
+        },
+        {
+          "do": "sound",
+          "name": "hit"
+        },
+        {
+          "do": "toast",
+          "text": "THE CRATE BREAKS - 150 ZENI INSIDE!"
+        },
+        {
+          "amount": 150,
+          "do": "zeni"
+        }
+      ],
+      "trigger": {
+        "type": "area"
+      }
+    },
+    {
+      "id": "ks_end",
+      "if": {
+        "flags": [
+          "ks_capsule"
+        ]
+      },
+      "name": "STORY: THE VAULT",
+      "steps": [
+        {
+          "dir": "left",
+          "do": "show_person",
+          "name": "PROFESSOR",
+          "set": 111,
+          "x": 10590,
+          "y": 21336
+        },
+        {
+          "do": "emote",
+          "kind": "!",
+          "who": "PROFESSOR"
+        },
+        {
+          "do": "say",
+          "face": 111,
+          "text": "My KEY CAPSULE! You really found it!",
+          "who": "PROFESSOR"
+        },
+        {
+          "do": "say",
+          "face": 111,
+          "text": "Here - take these for your trouble. The invention? Hmm... it's still a secret.",
+          "who": "PROFESSOR"
+        },
+        {
+          "count": 3,
+          "do": "give",
+          "item": "senzu"
+        },
+        {
+          "amount": 500,
+          "do": "zeni"
+        },
+        {
+          "do": "say",
+          "face": 76,
+          "text": "That was fun! See you around, %s.",
+          "who": "KRILLIN"
+        },
+        {
+          "do": "companion",
+          "leave": true,
+          "name": "KRILLIN"
+        },
+        {
+          "do": "the_end"
+        }
+      ],
+      "trigger": {
+        "type": "area"
+      }
+    }
+  ]
+}

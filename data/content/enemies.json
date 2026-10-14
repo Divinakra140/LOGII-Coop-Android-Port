@@ -1,0 +1,200 @@
+{
+ "_help": "Foes that have a behaviour script in the game (nearly all of them) now fight with the game's own AI, read from your ROM (imported/data/ai.json): its moves, timing, attacks and reactions. These styles below are only used for the planet bosses and world bosses. How foes fight. Every foe kind uses the attack it has in the game (read from the game's own behaviour data: which kinds shoot lasers, spit fire, throw bombs or stomp), drawn with the game's own sprites. Styles: melee (walks up and hits with its attack pose), lunger (crouches, then leaps), slammer (raises its arms - a circle warns you - then slams), laser (gets in line with you, then a straight zig-zag laser; strong ones fire two), fireball (spits fire that bursts into flame; strong ones spit three, big ones leave burning ground), bomber (throws lit bombs in an arc - get away before the fuse burns down; strong ones throw three), stomper (stomps: a white shock ring runs outward; strong ones send two). The boss mixes its own attack with a charged beam, a ring of fireballs, shock rings and leaps, and calls for help when hurt. 'groups' sets the style for kinds the game gives no special attack (people, animals, robots, big ones); 'types' sets one enemy type number (see imported/data/enemies.json). Numbers: speed px per tick, range px, cooldown ticks (60 = 1 s), power x the foe's attack.",
+ "groups": {
+  "human": {
+   "style": "melee"
+  },
+  "animal": {
+   "style": "lunger"
+  },
+  "robot": {
+   "style": "melee"
+  },
+  "big": {
+   "style": "slammer"
+  }
+ },
+ "styles": {
+  "lunger": {
+   "range": 90,
+   "windup": 22,
+   "speed": 2.6,
+   "time": 18,
+   "cooldown": [
+    80,
+    140
+   ]
+  },
+  "slammer": {
+   "range": 56,
+   "windup": 36,
+   "radius": 46,
+   "cooldown": [
+    110,
+    170
+   ]
+  },
+  "laser": {
+   "range": 170,
+   "keep": 90,
+   "windup": 20,
+   "speed": 5.0,
+   "len": 72,
+   "life": 60,
+   "power": 0.9,
+   "cooldown": [
+    100,
+    160
+   ]
+  },
+  "fireball": {
+   "range": 150,
+   "keep": 85,
+   "windup": 16,
+   "speed": 2.4,
+   "life": 90,
+   "power": 1.0,
+   "cooldown": [
+    90,
+    150
+   ]
+  },
+  "bomber": {
+   "range": 125,
+   "keep": 80,
+   "windup": 16,
+   "flight": 40,
+   "fuse": 45,
+   "radius": 30,
+   "power": 1.4,
+   "cooldown": [
+    150,
+    240
+   ]
+  },
+  "stomper": {
+   "range": 70,
+   "windup": 30,
+   "radius": 72,
+   "ring_speed": 1.8,
+   "power": 1.3,
+   "cooldown": [
+    120,
+    180
+   ]
+  },
+  "boss": {
+   "every": 200,
+   "volley": 10,
+   "beam_charge": 50,
+   "beam_time": 60,
+   "beam_len": 240,
+   "beam_width": 12,
+   "radius": 72,
+   "help_at": 0.5,
+   "help": 3
+  }
+ },
+ "types": [
+  {
+   "type": 65,
+   "style": "laser"
+  },
+  {
+   "type": 66,
+   "style": "laser"
+  },
+  {
+   "type": 67,
+   "style": "laser"
+  },
+  {
+   "type": 31,
+   "style": "fireball"
+  },
+  {
+   "type": 32,
+   "style": "fireball"
+  },
+  {
+   "type": 33,
+   "style": "fireball"
+  },
+  {
+   "type": 60,
+   "style": "fireball"
+  },
+  {
+   "type": 76,
+   "style": "fireball"
+  },
+  {
+   "type": 114,
+   "style": "fireball"
+  },
+  {
+   "type": 116,
+   "style": "fireball"
+  },
+  {
+   "type": 118,
+   "style": "fireball"
+  },
+  {
+   "type": 9,
+   "style": "bomber"
+  },
+  {
+   "type": 10,
+   "style": "bomber"
+  },
+  {
+   "type": 45,
+   "style": "bomber"
+  },
+  {
+   "type": 75,
+   "style": "bomber"
+  },
+  {
+   "type": 86,
+   "style": "bomber"
+  },
+  {
+   "type": 11,
+   "style": "stomper"
+  },
+  {
+   "type": 16,
+   "style": "stomper"
+  },
+  {
+   "type": 49,
+   "style": "stomper"
+  },
+  {
+   "type": 54,
+   "style": "stomper"
+  },
+  {
+   "type": 56,
+   "style": "stomper"
+  },
+  {
+   "type": 99,
+   "style": "stomper"
+  },
+  {
+   "type": 100,
+   "style": "stomper"
+  },
+  {
+   "type": 101,
+   "style": "stomper"
+  },
+  {
+   "type": 102,
+   "style": "stomper"
+  }
+ ]
+}

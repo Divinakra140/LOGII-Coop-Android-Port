@@ -1,0 +1,56 @@
+{
+  "items": [
+    {
+      "count": 1,
+      "id": "senzu",
+      "x": 8120,
+      "y": 9784
+    }
+  ],
+  "people_add": [
+    {
+      "event": "ex_elder",
+      "lines": [
+        [
+          "",
+          "ELDER",
+          "Welcome, traveller."
+        ]
+      ],
+      "name": "ELDER",
+      "set": 54,
+      "x": 8096,
+      "y": 9744
+    },
+    {
+      "lines": [
+        [
+          "",
+          "MERCHANT",
+          "Take a look!"
+        ]
+      ],
+      "name": "MERCHANT",
+      "set": 54,
+      "shop": "ex_shop",
+      "x": 8144,
+      "y": 9744
+    }
+  ],
+  "zones": [
+    {
+      "count": 4,
+      "kinds": [
+        8
+      ],
+      "level": 0,
+      "rect": [
+        8528,
+        9568,
+        8656,
+        9696
+      ],
+      "respawn": 30
+    }
+  ]
+}

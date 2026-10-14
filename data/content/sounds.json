@@ -1,0 +1,95 @@
+{
+ "_help": "Which of the game's own sound samples plays for each sound. The samples are read from your ROM into imported/sounds/sfx_00.wav ... sfx_63.wav (open them in any player to listen). A list = a random one each time. A file sounds/<name>.ogg next to LoG2Coop.exe still wins over these. Remove a name to get the game's little made-up sound back.",
+ "sounds": {
+  "punch": [
+   37,
+   38
+  ],
+  "kick": [
+   37,
+   38
+  ],
+  "ki": [
+   13,
+   14
+  ],
+  "hit": [
+   34,
+   35,
+   36
+  ],
+  "crit": [
+   36
+  ],
+  "hurt": [
+   34,
+   35
+  ],
+  "beam_charge": [
+   43
+  ],
+  "beam": [
+   24
+  ],
+  "bomb": [
+   21
+  ],
+  "boom": [
+   20,
+   21
+  ],
+  "dash": [
+   25
+  ],
+  "slash": [
+   44
+  ],
+  "wave": [
+   61
+  ],
+  "flash": [
+   7
+  ],
+  "heal": [
+   60
+  ],
+  "die": [
+   23
+  ],
+  "pickup": [
+   48
+  ],
+  "item": [
+   48
+  ],
+  "zeni": [
+   50
+  ],
+  "transform": [
+   3
+  ],
+  "menu": [
+   9
+  ],
+  "move": [
+   49
+  ],
+  "error": [
+   19
+  ],
+  "laser": [
+   25
+  ],
+  "fireball": [
+   13,
+   14
+  ],
+  "throw": [
+   37,
+   38
+  ],
+  "stomp": [
+   20
+  ]
+ }
+}

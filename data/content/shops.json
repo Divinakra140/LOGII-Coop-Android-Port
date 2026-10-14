@@ -1,0 +1,2 @@
+{"_help": "Shops (DEV TOOLS - SHOPS): id, name, info (the greeting), items [{id, price}]. Give one to a person with the PERSON tool.",
+ "shops": [{"id": "kame_shop", "name": "KAME SHOP", "info": "Fresh senzu!", "items": [{"id": "senzu", "price": 150}, {"id": "power_pill", "price": 60}, {"id": "spirit_pill", "price": 60}]}]}

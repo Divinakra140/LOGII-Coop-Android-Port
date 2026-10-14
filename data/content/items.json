@@ -1,0 +1,14 @@
+{
+  "_help": "Items. hp / ep heal that part of the maximum; buff + mult + ticks give a power-up for a while (60 ticks = 1 second). drop = chance an ordinary foe leaves one. price in zeni at the CAPSULE SHOP (menu). See content/README.txt.",
+  "items": [
+    {"id": "senzu", "name": "SENZU BEAN", "hp": 1.0, "ep": 1.0, "max": 10, "drop": 0.015, "price": 600, "color": "9be35a", "info": "Full health and energy at once."},
+    {"id": "hp_capsule", "name": "HEALTH CAPSULE", "hp": 0.5, "max": 20, "drop": 0.05, "price": 80, "color": "60ff80", "info": "Heals half your health."},
+    {"id": "ki_capsule", "name": "KI CAPSULE", "ep": 0.6, "max": 20, "drop": 0.04, "price": 60, "color": "60a0ff", "info": "Brings back most of your energy."},
+    {"id": "power_pill", "name": "POWER PILL", "buff": "str", "mult": 1.3, "ticks": 1800, "max": 10, "drop": 0.012, "price": 220, "color": "ff7050", "info": "Punches 30% stronger for 30 seconds."},
+    {"id": "spirit_pill", "name": "SPIRIT PILL", "buff": "pwr", "mult": 1.3, "ticks": 1800, "max": 10, "drop": 0.012, "price": 220, "color": "ffd040", "info": "Ki 30% stronger for 30 seconds."},
+    {"id": "iron_pill", "name": "IRON PILL", "buff": "end", "mult": 1.5, "ticks": 1800, "max": 10, "drop": 0.012, "price": 220, "color": "b0b0c0", "info": "Take much less damage for 30 seconds."},
+    {"id": "speed_drink", "name": "SPEED DRINK", "buff": "speed", "mult": 1.3, "ticks": 1800, "max": 10, "drop": 0.01, "price": 180, "color": "60ffe0", "info": "Run 30% faster for 30 seconds."},
+    {"id": "training_scroll", "name": "TRAINING SCROLL", "buff": "exp", "mult": 2.0, "ticks": 3600, "max": 5, "drop": 0.006, "price": 500, "color": "f0e0b0", "info": "Double EXP for a minute."}
+  ],
+  "zeni": {"drop": 0.55, "min": 4, "max": 18, "per_level": 2}
+}

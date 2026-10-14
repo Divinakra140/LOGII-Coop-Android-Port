@@ -1,0 +1,29 @@
+{
+  "_help": "Music. YOUR OWN songs come first: music/<song>.ogg (or .mp3) next to LoG2Coop.exe - title, field, cave, lair, boss, victory - or a place's name (music/west city.ogg plays in West City, music/big mouth.ogg in the Big Mouth). Without a file, the little tune below that the game writes itself plays. Notes: C4 D#4 etc, '.' holds the note, '-' is silence, one step = a 16th... see content/README.txt.",
+  "songs": {
+    "field": {"bpm": 132, "lead_wave": "square", "bass_wave": "triangle",
+      "lead": "E5 . G5 . A5 . . . G5 . E5 . D5 . C5 . | D5 . E5 . G5 . . . E5 . . . - - - - | E5 . G5 . A5 . . . C6 . B5 . A5 . G5 . | A5 . G5 . E5 . D5 . E5 . . . . . - -",
+      "bass": "C3 . . . G3 . . . A2 . . . E3 . . . | F2 . . . C3 . . . G2 . . . D3 . . . | C3 . . . G3 . . . A2 . . . E3 . . . | F2 . . . G2 . . . C3 . . . G2 . . .",
+      "drums": "k - h - s - h - k - h k s - h - | k - h - s - h - k - h k s - s s"},
+    "cave": {"bpm": 96, "lead_wave": "triangle", "bass_wave": "square",
+      "lead": "A4 . . . C5 . . . B4 . . . G4 . . . | A4 . . . E5 . . . D5 . C5 . B4 . . . | A4 . . . C5 . . . B4 . . . G#4 . . . | A4 . . . . . . . - - - - - - - -",
+      "bass": "A2 . A2 . A2 . A2 . G2 . G2 . G2 . G2 . | F2 . F2 . F2 . F2 . E2 . E2 . E2 . E2 .",
+      "drums": "k - - - h - - - s - - - h - - - | k - - k h - - - s - - - h - h -"},
+    "lair": {"bpm": 120, "lead_wave": "square", "bass_wave": "square",
+      "lead": "D5 . . . F5 . . . E5 . D5 . C#5 . . . | D5 . . . A5 . . . G5 . F5 . E5 . . . | D5 . F5 . A5 . D6 . C6 . A5 . F5 . E5 . | D5 . . . . . . . - - - - - - - -",
+      "bass": "D2 . D3 . D2 . D3 . D2 . D3 . A1 . A2 . | A#1 . A#2 . A#1 . A#2 . A1 . A2 . A1 . A2 .",
+      "drums": "k - h - s - h - k k h - s - h h"},
+    "boss": {"bpm": 152, "lead_wave": "square", "bass_wave": "triangle",
+      "lead": "E5 . E5 . G5 . E5 . A#5 . A5 . G5 . E5 . | E5 . E5 . G5 . E5 . D5 . D#5 . E5 . . . | B5 . A5 . G5 . A5 . B5 . . . D6 . B5 . | A5 . G5 . F#5 . G5 . E5 . . . . . . .",
+      "bass": "E2 E3 E2 E3 E2 E3 E2 E3 G2 G3 G2 G3 A2 A3 A2 A3 | E2 E3 E2 E3 E2 E3 E2 E3 D2 D3 D2 D3 B1 B2 B1 B2",
+      "drums": "k h s h k k s h k h s h k k s s"},
+    "title": {"bpm": 110, "lead_wave": "square", "bass_wave": "triangle",
+      "lead": "C5 . . . G4 . C5 . E5 . . . D5 . C5 . | D5 . . . G4 . D5 . F5 . . . E5 . D5 . | E5 . . . C5 . E5 . G5 . . . A5 . G5 . | F5 . E5 . D5 . . . C5 . . . . . . .",
+      "bass": "C3 . . . . . . . G2 . . . . . . . | A2 . . . . . . . F2 . . . G2 . . .",
+      "drums": "k - - - s - - - k - k - s - - -"},
+    "victory": {"bpm": 140, "lead_wave": "square", "bass_wave": "triangle",
+      "lead": "C5 . E5 . G5 . C6 . . . G5 . C6 . . . | D6 . . . C6 . B5 . C6 . . . . . . .",
+      "bass": "C3 . . . G2 . . . C3 . . . G2 . . . | G2 . . . G2 . . . C3 . . . . . . .",
+      "drums": "k - s - k - s - k - s - k s s s"}
+  }
+}
